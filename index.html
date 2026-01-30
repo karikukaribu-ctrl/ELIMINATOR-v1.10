@@ -3,25 +3,32 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <title>The Eliminator</title>
+  <title>ELIMINATOR</title>
   <style>
     :root{
-      --bg:#0f1115;
+      --bg:#0b0d12;
       --fg:#e9edf5;
       --muted:#a8b0bd;
 
-      --panel:#141823;
-      --panel2:#101421;
+      --panel:#121625;
+      --panel2:#0d1020;
 
       --line:rgba(255,255,255,0.10);
       --soft:rgba(255,255,255,0.06);
+
       --chip:rgba(0,0,0,0.18);
 
       --accent1:#f2f2f2;
       --accent2:#aeb7c7;
 
-      --shadow:0 18px 60px rgba(0,0,0,0.58);
-      --r:22px;
+      --shadow:0 18px 60px rgba(0,0,0,0.62);
+      --r:24px;
+
+      --ok: rgba(242,242,242,0.92);
+      --warn: rgba(255,255,255,0.84);
+      --boom: rgba(255,255,255,0.14);
+
+      --glass: blur(10px);
     }
 
     *{ box-sizing:border-box; }
@@ -29,19 +36,30 @@
     body{
       margin:0;
       font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background: var(--bg);
+      background:
+        radial-gradient(1200px 520px at 50% 0%, rgba(242,242,242,0.10), transparent 62%),
+        radial-gradient(900px 420px at 20% 20%, rgba(242,242,242,0.07), transparent 60%),
+        linear-gradient(180deg, #07080c, var(--bg));
       color: var(--fg);
       overflow-x:hidden;
     }
 
-    /* ====== Shell ====== */
+    /* ====== FX Canvas ====== */
+    canvas#fx{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index: 110;
+    }
+
+    /* ====== App Shell ====== */
     .shell{
       min-height:100vh;
       display:grid;
       grid-template-rows: auto 1fr auto;
     }
 
-    /* ====== Topbar ====== */
+    /* ====== Top minimal bar ====== */
     .topbar{
       display:flex;
       align-items:center;
@@ -49,43 +67,47 @@
       padding: 12px 14px;
       gap:10px;
     }
+    .topbar.hidden{ display:none; }
+
     .topbar .left, .topbar .right{
       display:flex; gap:10px; align-items:center; flex-wrap:wrap;
     }
 
     .iconbtn{
       border:1px solid var(--line);
-      background: rgba(0,0,0,0.06);
+      background: rgba(0,0,0,0.12);
+      -webkit-backdrop-filter: var(--glass);
+      backdrop-filter: var(--glass);
       color: var(--fg);
       border-radius: 14px;
       padding: 10px 12px;
       cursor:pointer;
       font-weight: 900;
-      letter-spacing:0.06em;
+      letter-spacing:0.08em;
       text-transform: uppercase;
       font-size: 12px;
-      backdrop-filter: blur(10px);
+      user-select:none;
     }
     .iconbtn:hover{ border-color: rgba(242,242,242,0.22); }
     .iconbtn:active{ transform: translateY(1px); }
     .iconbtn:disabled{ opacity:0.5; cursor:not-allowed; }
 
-    /* Chips (light glass) */
-    .chips{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:flex-end; }
+    .chips{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
     .chip{
       display:inline-flex;
       gap:6px;
       align-items:center;
       padding:6px 10px;
       border-radius: 999px;
-      border:1px solid rgba(255,255,255,0.08);
-      background: rgba(0,0,0,0.14);
+      border:1px solid var(--line);
+      background: rgba(0,0,0,0.12);
+      -webkit-backdrop-filter: var(--glass);
+      backdrop-filter: var(--glass);
       color: var(--muted);
       font-size: 12px;
       font-weight: 900;
       user-select:none;
       white-space:nowrap;
-      backdrop-filter: blur(10px);
     }
     .chip b{ color: var(--fg); font-weight: 1000; }
 
@@ -94,17 +116,18 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding: 10px 14px 18px;
-      position:relative;
+      padding: 10px 14px 22px;
     }
 
     .focusCard{
-      width: min(920px, 96vw);
+      width: min(1040px, 96vw);
       border-radius: var(--r);
       border: 1px solid rgba(242,242,242,0.10);
       background:
-        radial-gradient(900px 420px at 50% 0%, rgba(242,242,242,0.16), transparent 62%),
-        linear-gradient(180deg, var(--panel), var(--panel2));
+        radial-gradient(980px 460px at 50% 0%, rgba(242,242,242,0.13), transparent 62%),
+        linear-gradient(180deg, rgba(18,22,37,0.86), rgba(10,12,22,0.86));
+      -webkit-backdrop-filter: var(--glass);
+      backdrop-filter: var(--glass);
       box-shadow: var(--shadow);
       padding: 18px;
       display:grid;
@@ -113,7 +136,7 @@
       overflow:hidden;
     }
 
-    /* Brand: above actions */
+    /* Brand */
     .brand{
       text-align:center;
       display:grid;
@@ -122,39 +145,39 @@
     }
     .brand h1{
       margin:0;
-      font-size: clamp(30px, 5.2vw, 48px);
-      font-weight: 1000;
-      letter-spacing: 0.16em;
+      font-size: clamp(34px, 6vw, 64px);
+      font-weight: 1100;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       line-height:1;
+      text-shadow: 0 12px 40px rgba(0,0,0,0.55);
     }
     .brand p{
       margin:0;
       color: var(--muted);
       font-size: 12px;
-      letter-spacing:0.14em;
+      letter-spacing:0.16em;
       text-transform: uppercase;
     }
 
-    /* Floating poetic line (no button frame) */
+    /* Floating surprise line (above actions) */
     .floatLine{
       text-align:center;
-      font-size: 13px;
-      color: rgba(233,237,245,0.78);
-      letter-spacing: 0.02em;
-      font-weight: 500;
-      font-style: normal;
-      min-height: 20px;
+      min-height: 18px;
+      color: rgba(242,242,242,0.86);
+      font-weight: 900;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      font-size: 12px;
+      opacity: 0.92;
       user-select:none;
-      opacity:0.92;
-      margin-top: -4px;
     }
 
-    /* BIG GLOBAL BAR (thicker) */
+    /* Big global bar (NO % label visible) */
     .barWrap{
       border-radius: 999px;
-      height: 40px; /* thicker */
-      background: rgba(255,255,255,0.05);
+      height: 26px;
+      background: rgba(255,255,255,0.06);
       overflow:hidden;
       border: 1px solid rgba(255,255,255,0.10);
       position:relative;
@@ -163,11 +186,11 @@
       height:100%;
       width:100%;
       background: linear-gradient(90deg, var(--accent1), var(--accent2));
-      transition: width 220ms ease;
+      transition: width 240ms ease;
     }
-    .barLabel{ display:none; } /* percent near big bar must NOT be visible */
+    .barLabel{ display:none; } /* demandé: pas de % visible */
 
-    /* Target */
+    /* Focus task area */
     .target{
       display:grid;
       gap: 10px;
@@ -175,11 +198,11 @@
       align-items:center;
     }
     .targetTitle{
-      font-size: clamp(22px, 4.0vw, 34px); /* bigger */
+      font-size: clamp(20px, 3.4vw, 30px);
       font-weight: 1000;
-      line-height:1.12;
+      line-height:1.15;
       word-break: break-word;
-      padding: 0 8px;
+      padding: 0 6px;
     }
     .targetMeta{
       color: var(--muted);
@@ -188,111 +211,107 @@
       line-height:1.2;
     }
 
-    /* Small task bar */
+    /* Small task bar (NO % label visible) */
     .sbarWrap{
       border-radius: 999px;
-      height: 16px;
+      height: 12px;
       background: rgba(255,255,255,0.06);
       overflow:hidden;
       border: 1px solid rgba(255,255,255,0.10);
       position:relative;
+      max-width: min(760px, 92vw);
+      margin: 0 auto;
     }
     .sbarFill{
       height:100%;
       width:100%;
-      background: linear-gradient(90deg, rgba(242,242,242,0.85), rgba(174,183,199,0.70));
-      transition: width 180ms ease;
+      background: linear-gradient(90deg, rgba(242,242,242,0.82), rgba(174,183,199,0.70));
+      transition: width 200ms ease;
     }
-    .sbarLabel{
-      position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size: 11px;
-      font-weight: 1000;
-      color: rgba(10,12,16,0.90);
-      mix-blend-mode: screen;
-      user-select:none;
-    }
+    .sbarLabel{ display:none; } /* demandé: pas de % visible */
 
-    /* Actions row: centered, roulette bigger, skip left, dego right */
+    /* ====== Actions: roulette + BIG central dego ====== */
     .actions{
       display:flex;
       justify-content:center;
       align-items:center;
-      gap: 14px;
+      gap: 16px;
       flex-wrap:wrap;
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
-    .btnGhost{
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.10);
-      color: var(--fg);
-      border-radius: 18px;
-      padding: 14px 16px;
-      cursor:pointer;
-      font-weight: 950;
-      font-size: 12px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      min-height: 64px;
-      backdrop-filter: blur(10px);
-    }
-    .btnGhost:hover{ border-color: rgba(242,242,242,0.20); }
-    .btnGhost:active{ transform: translateY(1px); }
-    .btnGhost:disabled{ opacity:0.5; cursor:not-allowed; }
-
+    /* Roulette big, casino vibe */
     .btnRoulette{
-      width: 112px;
-      height: 112px; /* bigger casino feel */
+      width: 108px;
+      height: 108px;
       border-radius: 999px;
       border:1px solid rgba(242,242,242,0.22);
       background:
-        radial-gradient(closest-side, rgba(242,242,242,0.22), rgba(0,0,0,0.05)),
-        linear-gradient(180deg, #0b0d12, #0a0c10);
+        radial-gradient(closest-side, rgba(242,242,242,0.22), rgba(0,0,0,0.06)),
+        linear-gradient(180deg, #0b0d12, #070810);
       color: var(--fg);
       cursor:pointer;
-      font-weight: 1000;
-      letter-spacing:0.10em;
+      font-weight: 1100;
+      letter-spacing:0.12em;
       text-transform: uppercase;
       display:grid;
       place-items:center;
       user-select:none;
       position:relative;
-      box-shadow: 0 14px 34px rgba(0,0,0,0.48);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.50);
     }
     .btnRoulette .ring{
       position:absolute; inset:12px;
       border-radius: 999px;
-      border:1px dashed rgba(255,255,255,0.18);
-      opacity:0.72;
+      border:2px dashed rgba(255,255,255,0.18);
+      opacity:0.80;
+    }
+    .btnRoulette .inner{
+      position:absolute; inset:26px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,0.10);
+      opacity:0.85;
     }
     .btnRoulette:hover{ border-color: rgba(242,242,242,0.36); }
     .btnRoulette:active{ transform: translateY(1px); }
     .btnRoulette:disabled{ opacity:0.5; cursor:not-allowed; }
     .btnRoulette.spinning .ring{ animation: spin 520ms linear infinite; }
+    .btnRoulette.spinning .inner{ animation: spin2 860ms linear infinite; }
     @keyframes spin{ from{ transform: rotate(0deg);} to{ transform: rotate(360deg);} }
+    @keyframes spin2{ from{ transform: rotate(360deg);} to{ transform: rotate(0deg);} }
 
+    /* Big central dego button */
     .btnDego{
-      border:1px solid rgba(242,242,242,0.16);
+      border:1px solid rgba(242,242,242,0.18);
       background:
-        radial-gradient(900px 260px at 30% 20%, rgba(242,242,242,0.14), transparent 60%),
-        linear-gradient(180deg, #0b0d12, #0a0c10);
+        radial-gradient(900px 260px at 50% 20%, rgba(242,242,242,0.12), transparent 62%),
+        linear-gradient(180deg, #0b0d12, #070810);
+      -webkit-backdrop-filter: var(--glass);
+      backdrop-filter: var(--glass);
       color:var(--fg);
-      border-radius: 18px;
-      padding: 16px 18px;
+      border-radius: 20px;
+      padding: 18px 20px;
       cursor:pointer;
-      font-weight: 1000;
-      letter-spacing: 0.12em;
+      font-weight: 1100;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      min-height: 64px;
-      min-width: min(520px, 78vw);
-      backdrop-filter: blur(10px);
+      min-height: 70px;
+      min-width: min(660px, 86vw);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.45);
+      position:relative;
+      overflow:hidden;
     }
-    .btnDego:hover{ border-color: rgba(242,242,242,0.30); }
+    .btnDego::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(520px 120px at 50% 30%, rgba(242,242,242,0.10), transparent 60%);
+      opacity:0.75;
+      pointer-events:none;
+      transition: opacity 180ms ease;
+    }
+    .btnDego:hover{ border-color: rgba(242,242,242,0.32); }
+    .btnDego:hover::after{ opacity:1; }
     .btnDego:active{ transform: translateY(1px); }
     .btnDego:disabled{ opacity:0.5; cursor:not-allowed; }
 
@@ -304,7 +323,26 @@
       margin-top: 2px;
     }
 
-    /* Hint */
+    .btn{
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.12);
+      -webkit-backdrop-filter: var(--glass);
+      backdrop-filter: var(--glass);
+      color: var(--fg);
+      border-radius: 14px;
+      padding: 10px 12px;
+      cursor:pointer;
+      font-weight: 950;
+      font-size: 12px;
+      letter-spacing:0.08em;
+      text-transform: uppercase;
+      white-space:nowrap;
+      user-select:none;
+    }
+    .btn:hover{ border-color: rgba(255,255,255,0.18); }
+    .btn:active{ transform: translateY(1px); }
+
+    /* Footer hint */
     .hint{
       text-align:center;
       color: var(--muted);
@@ -313,8 +351,9 @@
       padding: 10px 14px 18px;
       opacity:0.95;
     }
+    .hint.hidden{ display:none; }
 
-    /* ====== Drawer ====== */
+    /* ====== Drawer (menu translucide) ====== */
     .overlay{
       position:fixed; inset:0;
       background: rgba(0,0,0,0.56);
@@ -329,10 +368,12 @@
       position:fixed;
       top:0; left:0;
       height:100vh;
-      width: min(580px, 92vw);
+      width: min(620px, 94vw);
       background:
         radial-gradient(900px 420px at 40% 0%, rgba(242,242,242,0.14), transparent 62%),
-        linear-gradient(180deg, var(--panel), var(--panel2));
+        linear-gradient(180deg, rgba(18,22,37,0.90), rgba(10,12,22,0.90));
+      -webkit-backdrop-filter: var(--glass);
+      backdrop-filter: var(--glass);
       border-right: 1px solid rgba(255,255,255,0.10);
       transform: translateX(-110%);
       transition: transform 180ms ease;
@@ -342,7 +383,7 @@
       gap: 12px;
       padding: 14px;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
+      touch-action: pan-y;
     }
     .drawer.show{ transform: translateX(0); }
 
@@ -374,10 +415,9 @@
       font-size: 12px;
       letter-spacing:0.08em;
       text-transform: uppercase;
-      backdrop-filter: blur(10px);
+      user-select:none;
     }
-    .tab.active{ border-color: rgba(242,242,242,0.24); }
-    .tab:active{ transform: translateY(1px); }
+    .tab.active{ border-color: rgba(242,242,242,0.26); }
 
     .drawerBody{
       overflow:auto;
@@ -394,7 +434,6 @@
       padding: 12px;
       display:grid;
       gap:10px;
-      backdrop-filter: blur(10px);
     }
     .cardTitle{
       display:flex;
@@ -417,7 +456,6 @@
       padding: 10px 12px;
       outline:none;
       font-size:13px;
-      backdrop-filter: blur(10px);
     }
     textarea{ width:100%; min-height: 140px; resize: vertical; line-height:1.35; }
     textarea:focus, select:focus, input:focus{ border-color: rgba(242,242,242,0.22); }
@@ -428,23 +466,6 @@
       justify-content:flex-end;
       flex-wrap:wrap;
     }
-    .btn{
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.06);
-      color: var(--fg);
-      border-radius: 14px;
-      padding: 10px 12px;
-      cursor:pointer;
-      font-weight: 950;
-      font-size: 12px;
-      letter-spacing:0.08em;
-      text-transform: uppercase;
-      white-space:nowrap;
-      backdrop-filter: blur(10px);
-    }
-    .btn:hover{ border-color: rgba(242,242,242,0.18); }
-    .btn:active{ transform: translateY(1px); }
-    .btn:disabled{ opacity:0.55; cursor:not-allowed; }
 
     /* Lists */
     .list{ display:grid; gap:8px; }
@@ -452,11 +473,10 @@
     .trow{
       border:1px solid rgba(255,255,255,0.06);
       border-radius: 16px;
-      background: rgba(0,0,0,0.10);
+      background: rgba(0,0,0,0.12);
       padding: 10px;
       display:grid;
       gap:8px;
-      backdrop-filter: blur(10px);
     }
 
     .trowTop{
@@ -491,7 +511,7 @@
 
     .sbarMiniWrap{
       border-radius: 999px;
-      height: 12px;
+      height: 10px;
       background: rgba(255,255,255,0.06);
       overflow:hidden;
       border: 1px solid rgba(255,255,255,0.10);
@@ -508,7 +528,6 @@
       border-radius: 18px;
       overflow:hidden;
       background: rgba(0,0,0,0.10);
-      backdrop-filter: blur(10px);
     }
     summary{
       cursor:pointer;
@@ -526,48 +545,13 @@
       gap:10px;
     }
 
-    /* ====== Floating Quick Panels ====== */
-    .floatPanel{
-      position:fixed;
-      top: 64px;
-      right: 14px;
-      width: min(520px, calc(100vw - 28px));
-      max-height: min(70vh, 680px);
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(10,12,16,0.55);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      z-index: 95;
-      display:none;
-      overflow:hidden;
-    }
-    .floatPanel.show{ display:block; }
-    .floatPanelHeader{
-      display:flex; align-items:center; justify-content:space-between;
-      padding: 10px 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      color: var(--muted);
-      font-weight: 1000;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      font-size: 11px;
-    }
-    .floatPanelBody{
-      padding: 10px 12px 12px;
-      overflow:auto;
-      max-height: inherit;
-      display:grid;
-      gap:10px;
-    }
-
-    /* Toast + FX */
+    /* Toast */
     .toast{
       position:fixed;
       left:50%;
       bottom: 14px;
       transform: translateX(-50%);
-      background: rgba(11,13,18,0.92);
+      background: rgba(9,10,14,0.84);
       border:1px solid rgba(255,255,255,0.10);
       border-radius: 14px;
       padding: 12px 14px;
@@ -576,77 +560,62 @@
       opacity:0;
       pointer-events:none;
       transition: opacity 160ms ease, transform 160ms ease;
-      max-width: min(900px, calc(100vw - 24px));
+      max-width: min(920px, calc(100vw - 24px));
       box-shadow: var(--shadow);
       white-space:pre-wrap;
-      z-index: 140;
-      backdrop-filter: blur(12px);
+      z-index: 120;
+      -webkit-backdrop-filter: var(--glass);
+      backdrop-filter: var(--glass);
     }
     .toast.show{
       opacity:1;
       transform: translateX(-50%) translateY(-6px);
     }
 
-    canvas#fx{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      z-index: 130;
-    }
-
-    /* Big finale overlay */
-    .finale{
+    /* End overlay (big win) */
+    .win{
       position:fixed;
       inset:0;
       display:none;
       place-items:center;
-      background: rgba(0,0,0,0.62);
-      z-index: 150;
-      backdrop-filter: blur(8px);
+      z-index: 130;
+      background: rgba(0,0,0,0.60);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
     }
-    .finale.show{ display:grid; }
-    .finaleCard{
-      width: min(820px, 92vw);
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,0.12);
+    .win.show{ display:grid; }
+    .winCard{
+      width: min(900px, 92vw);
+      border-radius: 26px;
+      border:1px solid rgba(242,242,242,0.12);
       background:
-        radial-gradient(900px 420px at 50% 0%, rgba(242,242,242,0.14), transparent 62%),
-        linear-gradient(180deg, rgba(20,24,35,0.92), rgba(16,20,33,0.92));
+        radial-gradient(900px 420px at 50% 0%, rgba(242,242,242,0.16), transparent 62%),
+        linear-gradient(180deg, rgba(18,22,37,0.92), rgba(10,12,22,0.92));
       box-shadow: var(--shadow);
       padding: 18px;
       text-align:center;
       display:grid;
       gap:10px;
     }
-    .finaleCard h2{
-      margin:0;
-      font-size: clamp(22px, 4.2vw, 40px);
-      font-weight: 1000;
-      letter-spacing: 0.10em;
+    .winTitle{
+      font-weight: 1100;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
+      font-size: clamp(20px, 3.6vw, 34px);
     }
-    .finaleCard p{
-      margin:0;
-      color: rgba(233,237,245,0.84);
-      line-height:1.35;
+    .winText{
+      color: rgba(242,242,242,0.86);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      line-height: 1.35;
+      font-size: 14px;
     }
 
-    /* Tiny shake for “boom” */
-    @keyframes shake {
-      0%{ transform: translate(0,0); }
-      15%{ transform: translate(-6px, 2px); }
-      30%{ transform: translate(5px, -3px); }
-      45%{ transform: translate(-4px, -2px); }
-      60%{ transform: translate(6px, 3px); }
-      75%{ transform: translate(-3px, 1px); }
-      100%{ transform: translate(0,0); }
-    }
-    .shake{ animation: shake 380ms ease; }
-
+    /* Responsive tweaks */
     @media (max-width: 520px){
       .btnDego{ min-width: 92vw; }
       .focusCard{ padding: 16px; }
-      .btnRoulette{ width: 104px; height: 104px; }
+      .btnRoulette{ width: 96px; height:96px; }
     }
   </style>
 </head>
@@ -655,31 +624,28 @@
   <canvas id="fx"></canvas>
 
   <div class="shell">
-    <div class="topbar">
+    <div class="topbar" id="topbar">
       <div class="left">
         <button class="iconbtn" id="btnMenu" aria-label="Menu">☰</button>
-        <button class="iconbtn" id="btnList" aria-label="Liste flottante">Liste</button>
         <button class="iconbtn" id="btnNewDay">Nouveau jour</button>
       </div>
 
-      <div class="right chips" id="topChips" aria-label="Compteurs">
-        <span class="chip">Tâches <b id="doneTasks">0</b>/<b id="startTasks">0</b> (<b id="pctTasks">0</b>%)</span>
-        <span class="chip">Reste <b id="leftTasks">0</b></span>
+      <div class="right chips" aria-label="Compteurs">
+        <span class="chip">Départ <b id="startTasks">0</b> tâches</span>
+        <span class="chip">Reste <b id="leftTasks">0</b> tâches</span>
         <span class="chip">ETH <b id="leftEth">0</b>/<b id="startEth">0</b></span>
         <span class="chip">Éliminé <b id="elimEth">0</b></span>
       </div>
     </div>
 
     <div class="stage">
-      <section class="focusCard" id="focusCard" aria-label="Focus">
+      <section class="focusCard" aria-label="Focus">
         <div class="brand">
-          <h1>THE ELIMINATOR</h1>
-          <p>Dégommer-les tous</p>
+          <h1>ELIMINATOR</h1>
+          <p>Dégommez-les tous</p>
         </div>
 
-        <div class="floatLine" id="floatLine">—</div>
-
-        <!-- BIG GLOBAL BAR (remaining %) -->
+        <!-- BIG GLOBAL BAR (remaining % but label hidden) -->
         <div class="barWrap" aria-label="Progression globale">
           <div class="barFill" id="gFill"></div>
           <div class="barLabel" id="gLabel">100%</div>
@@ -689,67 +655,40 @@
           <div class="targetTitle" id="focusTitle">CIBLE EN COURS DE RECHERCHE</div>
           <div class="targetMeta" id="focusMeta">—</div>
 
-          <div class="chips" id="focusChips" style="justify-content:center;">
-            <span class="chip">ETH <b id="focusEth">0</b></span>
-            <span class="chip">Priorité <b id="focusPrio">—</b></span>
-            <span class="chip">Énergie <b id="focusEnergy">—</b></span>
-            <span class="chip">Tâche <b id="focusPct">100</b>%</span>
-          </div>
-
-          <!-- SMALL TASK BAR -->
+          <!-- Small task bar -->
           <div class="sbarWrap" aria-label="Progression tâche">
             <div class="sbarFill" id="tFill"></div>
             <div class="sbarLabel" id="tLabel">100%</div>
           </div>
 
-          <div class="actions">
-            <button class="btnGhost" id="btnSkip" aria-label="Passer">Passer</button>
+          <!-- Floating line (above actions) -->
+          <div class="floatLine" id="floatLine">—</div>
 
+          <div class="actions">
             <button class="btnRoulette" id="btnRoulette" aria-label="Roulette">
               <span class="ring"></span>
+              <span class="inner"></span>
               R
             </button>
 
-            <button class="btnDego" id="btnDego">Dégommer 1 ETH</button>
+            <button class="btnDego" id="btnDego">Dégommer 1 ethorion</button>
           </div>
 
           <div class="subActions">
-            <button class="btn" id="btnNotes">Notes (cible)</button>
+            <button class="btn" id="btnNotesTask">Notes tâche</button>
+            <button class="btn" id="btnNotesDay">Notes jour</button>
             <button class="btn" id="btnDone">Terminer</button>
+            <button class="btn" id="btnSkip">Passer</button>
           </div>
         </div>
       </section>
     </div>
 
-    <div class="hint">
+    <div class="hint" id="hint">
       Import : seules les lignes qui commencent par “-” sont ajoutées comme tâches. Le reste = catégories.
-      Raccourci : Ctrl/⌘+Enter pour ajouter depuis Inbox. R = roulette. D = dégommer.
+      Raccourci : Ctrl/⌘+Enter pour ajouter depuis Inbox. R = roulette · D = dégommage · M = menu.
     </div>
   </div>
-
-  <!-- Floating list panel -->
-  <section class="floatPanel" id="floatList" aria-label="Liste flottante">
-    <div class="floatPanelHeader">
-      <span>Liste</span>
-      <button class="btn" id="btnCloseList">Fermer</button>
-    </div>
-    <div class="floatPanelBody">
-      <div class="card" style="margin:0;">
-        <div class="cardTitle">
-          <span>Actives</span>
-          <span>
-            <select id="floatSortSel" aria-label="Tri (liste flottante)">
-              <option value="order">Tri: ordre</option>
-              <option value="prio">Tri: priorité</option>
-              <option value="eth">Tri: ethorion</option>
-              <option value="cat">Tri: catégorie</option>
-            </select>
-          </span>
-        </div>
-        <div class="list" id="floatTaskList"></div>
-      </div>
-    </div>
-  </section>
 
   <!-- Drawer -->
   <div class="overlay" id="overlay"></div>
@@ -770,13 +709,16 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <div class="finale" id="finale" aria-label="Finale">
-    <div class="finaleCard">
-      <h2 id="finaleTitle">MISSION ACCOMPLIE</h2>
-      <p id="finaleText">—</p>
-      <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:6px;">
-        <button class="btn" id="btnFinaleClose">OK</button>
-        <button class="btn" id="btnFinaleNewDay">Nouveau jour</button>
+  <!-- BIG END -->
+  <div class="win" id="win">
+    <div class="winCard">
+      <div class="winTitle" id="winTitle">MISSION ACCOMPLIE</div>
+      <div class="winText" id="winText">
+        Plus rien à dégomm… c’est louche. Soit tu es un ninja suprême, soit l’univers a crashé.
+      </div>
+      <div class="rowBtns" style="justify-content:center;">
+        <button class="btn" id="btnWinClose">Retour</button>
+        <button class="btn" id="btnWinNewDay">Nouveau jour</button>
       </div>
     </div>
   </div>
@@ -789,13 +731,12 @@
   // Storage + State
   // =========================
   const LS_KEY = "eliminator_app_v2";
-  const MAX_HISTORY = 40;
+  const MAX_HISTORY = 50;
 
   const el = (id)=>document.getElementById(id);
   const now = ()=>Date.now();
   const clamp = (n,a,b)=>Math.max(a, Math.min(b,n));
   const uid = ()=> Math.random().toString(36).slice(2,10)+"-"+Date.now().toString(36);
-  const chance = (p)=> Math.random() < p;
 
   // Top counters
   const startTasksEl = el("startTasks");
@@ -803,40 +744,27 @@
   const startEthEl   = el("startEth");
   const leftEthEl    = el("leftEth");
   const elimEthEl    = el("elimEth");
-  const doneTasksEl  = el("doneTasks");
-  const pctTasksEl   = el("pctTasks");
 
   // Bars
   const gFill = el("gFill");
-  const gLabel = el("gLabel"); // hidden via CSS
+  const gLabel = el("gLabel");
   const tFill = el("tFill");
   const tLabel = el("tLabel");
 
   // Focus
-  const focusCard = el("focusCard");
   const focusTitle = el("focusTitle");
   const focusMeta = el("focusMeta");
-  const focusEth = el("focusEth");
-  const focusPrio = el("focusPrio");
-  const focusEnergy = el("focusEnergy");
-  const focusPct = el("focusPct");
   const floatLine = el("floatLine");
 
   // Buttons
   const btnMenu = el("btnMenu");
-  const btnList = el("btnList");
   const btnNewDay = el("btnNewDay");
   const btnRoulette = el("btnRoulette");
   const btnDego = el("btnDego");
-  const btnNotes = el("btnNotes");
+  const btnNotesTask = el("btnNotesTask");
+  const btnNotesDay = el("btnNotesDay");
   const btnDone = el("btnDone");
   const btnSkip = el("btnSkip");
-
-  // Floating list
-  const floatList = el("floatList");
-  const btnCloseList = el("btnCloseList");
-  const floatTaskList = el("floatTaskList");
-  const floatSortSel = el("floatSortSel");
 
   // Drawer
   const overlay = el("overlay");
@@ -852,15 +780,19 @@
   const fxCanvas = el("fx");
   const fx = fxCanvas.getContext("2d");
 
-  // Finale
-  const finale = el("finale");
-  const finaleTitle = el("finaleTitle");
-  const finaleText = el("finaleText");
-  const btnFinaleClose = el("btnFinaleClose");
-  const btnFinaleNewDay = el("btnFinaleNewDay");
+  // UI toggles
+  const topbar = el("topbar");
+  const hint = el("hint");
+
+  // Big end
+  const win = el("win");
+  const winTitle = el("winTitle");
+  const winText = el("winText");
+  const btnWinClose = el("btnWinClose");
+  const btnWinNewDay = el("btnWinNewDay");
 
   // =========================
-  // Helpers
+  // Default State
   // =========================
   function isoDay(d = new Date()){
     const y = d.getFullYear();
@@ -869,111 +801,79 @@
     return `${y}-${m}-${da}`;
   }
 
-  function esc(s){
-    return String(s ?? "").replace(/[&<>"']/g, c => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-    }[c]));
+  function buildSets(){
+    // 1) Admission unité 74 (5 patients, 3 items/patient)
+    const adm = [];
+    adm.push("UNITÉ 74 — ADMISSION");
+    for(let i=1;i<=5;i++){
+      adm.push(`- Patient ${i} — Voir le/la patient·e — 2 ethorions — importance 3`);
+      adm.push(`- Patient ${i} — Faire la note d’admission — 3 ethorions — importance 3`);
+      adm.push(`- Patient ${i} — Revoir / ajuster le traitement — 2 ethorions — importance 2`);
+    }
+
+    // 2) Sortie unité 74 (5 patients, 3 items/patient)
+    const out = [];
+    out.push("UNITÉ 74 — SORTIE");
+    for(let i=1;i<=5;i++){
+      out.push(`- Patient ${i} — Voir le/la patient·e — 2 ethorions — importance 3`);
+      out.push(`- Patient ${i} — Faire la note de sortie — 3 ethorions — importance 3`);
+      out.push(`- Patient ${i} — Vérifier / finaliser traitement & ordonnances — 2 ethorions — importance 2`);
+    }
+
+    // 3) Consultations (6 patients, 2 items/patient : voir + note)
+    const consult = [];
+    consult.push("CONSULTATIONS");
+    for(let i=1;i<=6;i++){
+      consult.push(`- Patient ${i} — Voir le/la patient·e — 2 ethorions — importance 3`);
+      consult.push(`- Patient ${i} — Faire la note de consultation — 2 ethorions — importance 3`);
+    }
+
+    // 4) Set “quotidien utile” (administratif + organisation)
+    const daily = [
+      "QUOTIDIEN — SOUTIEN",
+      "- Vérifier l’horaire des cours & adapter le planning consultations — 2 ethorions — importance 3",
+      "- Trier l’inbox mails pro (5 minutes) — 1 ethorion — importance 2",
+      "- Lister 3 priorités réelles (pas des fantasmes) — 1 ethorion — importance 2",
+      "- Préparer 1 message / appel difficile — 2 ethorions — importance 2",
+      "- Ranger / reset bureau (10 minutes) — 2 ethorions — importance 1",
+      "- Micro-pause + eau + respiration (3 minutes) — 1 ethorion — importance 1"
+    ];
+
+    return [
+      { id:"set_u74_adm", name:"U74 Admission", lines: adm },
+      { id:"set_u74_out", name:"U74 Sortie", lines: out },
+      { id:"set_consult", name:"Consultations", lines: consult },
+      { id:"set_daily", name:"Quotidien", lines: daily }
+    ];
   }
 
-  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-
-  // =========================
-  // Default State
-  // =========================
   function initial(){
     const today = isoDay();
     return {
       version: 2,
-      day: {
-        id: today,
-        startTasks: 0,
-        startEth: 0
-      },
+      day: { id: today, startTasks: 0, startEth: 0 },
       focusId: null,
+
+      // roulette bias
       energyProfile: { level: 2, motivation: 2 }, // 1..3
+
+      // UI
       ui: {
         activeTab: "inbox",
         sort: "order",
-        floatSort: "order",
-        showTopChips: true,
-        showFocusChips: true,
-        showFloatingLine: true,
-        compact: false,
-        rouletteSource: "all",   // all | set | last
-        activeSetId: "set_adm74" // used when rouletteSource=set
+        topbarHidden: false,
+        hintHidden: false
       },
+
+      // Data
       tasks: [],
-      sets: buildDefaultSets(),
-      lastBatchId: null,       // for rouletteSource=last
+      sets: buildSets(),
+
+      // Notes
+      dayNotes: "", // persistent notes for the day
       history: { undo: [], redo: [] },
-      events: [],
-      notes: {
-        daily: "",             // persistent notes
-        emailTo: ""            // optional, user can set
-      }
+      events: []
     };
-  }
-
-  function buildDefaultSets(){
-    // Fragments pre-remplis, numérotés, sans demander de nom.
-    const mkLinesAdm = () => {
-      const out = ["UNITÉ 74 – ADMISSION"];
-      for(let i=1;i<=5;i++){
-        out.push(`- Voir patient ${i} – 1 ethorion – importance 3`);
-        out.push(`- Faire la note patient ${i} – 1 ethorion – importance 3`);
-        out.push(`- Traitement patient ${i} – 1 ethorion – importance 2`);
-      }
-      return out;
-    };
-
-    const mkLinesSortie = () => {
-      const out = ["UNITÉ 74 – SORTIE"];
-      for(let i=1;i<=5;i++){
-        out.push(`- Revoir patient ${i} – 1 ethorion – importance 3`);
-        out.push(`- Note de sortie patient ${i} – 1 ethorion – importance 3`);
-        out.push(`- Revoir traitement patient ${i} – 1 ethorion – importance 2`);
-      }
-      return out;
-    };
-
-    const mkLinesConsult = () => {
-      const out = ["CONSULTATIONS"];
-      for(let i=1;i<=6;i++){
-        out.push(`- Voir patient ${i} – 1 ethorion – importance 3`);
-        out.push(`- Faire la note patient ${i} – 1 ethorion – importance 3`);
-      }
-      out.push("SUIVI");
-      out.push("- Répondre aux mails importants – 1 ethorion – importance 2");
-      out.push("- Réorganiser le planning (cours + rendez-vous) – 2 ethorions – importance 3");
-      return out;
-    };
-
-    const mkLinesAppels = () => {
-      const out = ["APPELS"];
-      for(let i=1;i<=8;i++){
-        out.push(`- Appel ${i} – préparation – 1 ethorion – importance 2`);
-        out.push(`- Appel ${i} – exécution – 1 ethorion – importance 2`);
-      }
-      return out;
-    };
-
-    const mkLinesDailyBoost = () => ([
-      "LOAD – QUOTIDIEN",
-      "- Trier Inbox (10 min) – 1 ethorion – importance 2",
-      "- Ranger l’espace (micro) – 1 ethorion – importance 1",
-      "- Relancer un dossier bloqué – 2 ethorions – importance 3",
-      "- Écrire 6 lignes (rapport / note) – 1 ethorion – importance 2",
-      "- Faire un mini-plan (3 points) – 1 ethorion – importance 2",
-      "- Préparer la prochaine victoire – 1 ethorion – importance 2"
-    ]);
-
-    return [
-      { id: "set_adm74", name: "Admission unité 74", lines: mkLinesAdm() },
-      { id: "set_sortie74", name: "Sortie unité 74", lines: mkLinesSortie() },
-      { id: "set_consult", name: "Consultations", lines: mkLinesConsult() },
-      { id: "set_appels", name: "Appels", lines: mkLinesAppels() },
-      { id: "set_boost", name: "Daily boost", lines: mkLinesDailyBoost() }
-    ];
   }
 
   let state = load() || initial();
@@ -988,19 +888,15 @@
       if(!obj || !Array.isArray(obj.tasks)) return null;
 
       // migrations / defaults
-      if(!obj.sets) obj.sets = buildDefaultSets();
+      if(!obj.sets) obj.sets = buildSets();
       if(!obj.history) obj.history = {undo:[], redo:[]};
       if(!obj.events) obj.events = [];
       if(!obj.energyProfile) obj.energyProfile = {level:2, motivation:2};
-      if(!obj.ui) obj.ui = initial().ui;
+      if(!obj.ui) obj.ui = {activeTab:"inbox", sort:"order", topbarHidden:false, hintHidden:false};
       if(!obj.day) obj.day = initial().day;
-      if(!obj.notes) obj.notes = initial().notes;
-      if(!("lastBatchId" in obj)) obj.lastBatchId = null;
+      if(typeof obj.dayNotes !== "string") obj.dayNotes = "";
 
-      // ensure new ui flags exist
-      const uiDef = initial().ui;
-      obj.ui = {...uiDef, ...(obj.ui||{})};
-
+      obj.version = 2;
       return obj;
     }catch{ return null; }
   }
@@ -1063,21 +959,24 @@
     x = x.replace(/[|¦]+/g," ").replace(/\s{2,}/g," ").trim();
     return x;
   }
+
   function isTaskLine(line){ return /^-\s+/.test(line); }
   function stripTaskPrefix(line){ return line.replace(/^-+\s*/, "").trim(); }
 
-  function parseEth(text){
+  function parseEthorion(text){
     const t = text.toLowerCase();
     const m = t.match(/(\d{1,2})\s*(?:ethorion|ethorions|eth)\b/);
     if(m) return clamp(parseInt(m[1],10)||1, 1, 50);
     return null;
   }
+
   function parseMinutes(text){
     const t = text.toLowerCase();
     const m = t.match(/(\d{1,3})\s*(?:minutes|minute|min)\b/);
     if(m) return clamp(parseInt(m[1],10)||0, 1, 999);
     return null;
   }
+
   function parseImportance(text){
     const t = text.toLowerCase();
     const m = t.match(/\b(?:importance|prio|priorité)\s*(\d)\b/);
@@ -1093,12 +992,14 @@
 
   function inferEnergyFromText(title, category){
     const t = (title+" "+(category||"")).toLowerCase();
-    if(/\b(appel|appeler|tél|tel|téléphone|mail|email|encoder|encodage)\b/.test(t)) return 1;
-    if(/\b(rapport|rédaction|dossier|analyse|staff)\b/.test(t)) return 3;
+    // low energy: calls, emails, quick admin
+    if(/\b(appeler|tél|tel|téléphone|mail|email|ranger|trier|encoder|encodage)\b/.test(t)) return 1;
+    // high energy: long writing / complex analysis
+    if(/\b(rapport|rédaction|dossier|analyse|note d’admission|note de sortie)\b/.test(t)) return 3;
     return 2;
   }
 
-  function parsePasted(raw, meta={}){
+  function parsePasted(raw){
     const lines = String(raw||"").split(/\r?\n/).map(cleanLine);
     let currentCategory = "Sans catégorie";
     const out = [];
@@ -1113,21 +1014,20 @@
       }
 
       const body = stripTaskPrefix(line);
-      const eth = parseEth(body) ?? 3;
+
+      const eth = parseEthorion(body) ?? 3;
       const minutes = parseMinutes(body);
       const prio = parseImportance(body) ?? 2;
-      const title = cleanLine(removeMetaFromTitle(body));
 
+      const title = cleanLine(removeMetaFromTitle(body));
       out.push({
         title,
         category: currentCategory,
-        ethTotal: eth,
-        ethRemain: eth,
+        ethorionTotal: eth,
+        ethorionRemaining: eth,
         minutesHint: minutes || null,
         priority: prio,
-        energyTag: inferEnergyFromText(title, currentCategory),
-        setId: meta.setId || null,
-        batchId: meta.batchId || null
+        energyTag: inferEnergyFromText(title, currentCategory)
       });
     }
     return out;
@@ -1142,6 +1042,7 @@
       state.day.id = today;
       state.day.startTasks = 0;
       state.day.startEth = 0;
+      // dayNotes intentionally kept (your choice) — if you want per-day notes, we can key by date
     }
     if(state.day.startTasks===0 && state.day.startEth===0){
       setDayBaseline("Départ fixé");
@@ -1151,7 +1052,7 @@
   function setDayBaseline(label){
     const active = state.tasks.filter(t=>!t.done);
     state.day.startTasks = active.length;
-    state.day.startEth = active.reduce((a,t)=>a + (t.ethRemain||0), 0);
+    state.day.startEth = active.reduce((a,t)=>a + (t.ethorionRemaining||0), 0);
     logEvent(label || "Départ fixé");
     save();
   }
@@ -1172,14 +1073,12 @@
     return Math.max(...act.map(t=>t.order||0)) + 1;
   }
 
-  function addTasksFromText(raw, meta={}){
-    const batchId = meta.batchId || ("b_"+uid());
-    const parsed = parsePasted(raw, {...meta, batchId});
+  function addTasksFromText(raw){
+    const parsed = parsePasted(raw);
     if(!parsed.length){
       showToast("Rien (vérifie les tirets).", 2600);
       return;
     }
-
     pushHistory(`Ajout ${parsed.length} tâche(s)`);
 
     const start = nextOrder();
@@ -1188,8 +1087,8 @@
         id: uid(),
         title: p.title,
         category: p.category,
-        ethTotal: p.ethTotal,
-        ethRemain: p.ethRemain,
+        ethorionTotal: p.ethorionTotal,
+        ethorionRemaining: p.ethorionRemaining,
         minutesHint: p.minutesHint,
         priority: p.priority,
         energyTag: p.energyTag,
@@ -1197,13 +1096,9 @@
         done: false,
         order: start+i,
         createdAt: now(),
-        doneAt: null,
-        setId: p.setId,
-        batchId: p.batchId
+        doneAt: null
       });
     });
-
-    state.lastBatchId = batchId;
 
     ensureDay();
     if(!state.focusId){
@@ -1213,7 +1108,7 @@
 
     save();
     renderAll();
-    showToast("Ajouté.", 2400);
+    showToast("Ajouté.", 2200);
   }
 
   function getTask(id){ return state.tasks.find(t=>t.id===id) || null; }
@@ -1232,28 +1127,23 @@
 
     t.done = true;
     t.doneAt = now();
-    t.ethRemain = 0;
+    t.ethorionRemaining = 0;
 
-    // Normal celebration + sometimes “bigger surprise”
-    confetti(2.2);
+    // celebration (regular)
+    confettiDots(1.6);
     flash(0.10);
-    if(chance(0.18)){
-      boomSurprise();
-      showToast(pick(DONE_SURPRISE), 3600);
-    }else{
-      showToast(pick(DONE_LINES), 3200);
-    }
+
+    // surprise chance (violent-ish, intermittent)
+    maybeSurprise("task");
+
+    showToast(pick(DONE_LINES), 3200);
 
     const next = pickWeightedTask();
     state.focusId = next ? next.id : null;
 
     save();
     renderAll();
-
-    // If nothing left => finale
-    if(!countActiveTasks()){
-      triggerFinale();
-    }
+    checkWin();
   }
 
   function degoOne(){
@@ -1264,21 +1154,18 @@
     }
 
     pushHistory("Dégommage");
+    t.ethorionRemaining = Math.max(0, (t.ethorionRemaining||0) - 1);
 
-    t.ethRemain = Math.max(0, (t.ethRemain||0) - 1);
-
-    // Fragment: no confetti by default (per your request)
+    // roulette vibe: small visual reward
+    confettiDots(0.9);
     flash(0.08);
+
+    // surprise chance (small)
+    maybeSurprise("eth");
+
     showToast(pick(LINES), 2400);
 
-    // Rare micro-surprise, short
-    if(chance(0.08)){
-      boomSurprise(true);
-      showToast(pick(MICRO_SURPRISE), 2600);
-    }
-
-    if(t.ethRemain===0){
-      // Task complete => confetti
+    if(t.ethorionRemaining===0){
       finishTask(t.id, {silent:true});
       return;
     }
@@ -1292,7 +1179,8 @@
     state.focusId = next ? next.id : null;
     save();
     renderAll();
-    showToast(next ? "PASSÉ." : "PLUS DE CIBLES.", 2200);
+    showToast(next ? "CIBLE CHANGÉE." : "PLUS DE CIBLES.", 2200);
+    if(!next) checkWin();
   }
 
   function deleteTask(taskId){
@@ -1302,6 +1190,7 @@
     state.tasks = state.tasks.filter(x=>x.id!==taskId);
     save();
     renderAll();
+    checkWin();
   }
 
   function duplicateTask(taskId){
@@ -1312,82 +1201,63 @@
     c.id = uid();
     c.done = false;
     c.doneAt = null;
-    c.ethRemain = c.ethTotal;
+    c.ethorionRemaining = c.ethorionTotal;
     c.order = nextOrder();
     c.createdAt = now();
     state.tasks.push(c);
     save();
     renderAll();
-    showToast("Dupliqué.", 2200);
+    showToast("Dupliqué.", 2000);
   }
 
-  function setEth(taskId){
+  function setEthorion(taskId){
     const t = getTask(taskId);
     if(!t || t.done) return;
-    const val = prompt("ETH total ?", String(t.ethTotal||3));
+    const val = prompt("ETHORION total ?", String(t.ethorionTotal||3));
     if(val===null) return;
 
-    pushHistory("Régler ETH");
-    const n = clamp(parseInt(val,10)||t.ethTotal||3, 1, 50);
+    pushHistory("Régler ethorion");
+    const n = clamp(parseInt(val,10)||t.ethorionTotal||3, 1, 50);
 
-    const wasTotal = Math.max(1, t.ethTotal||1);
-    const wasRem = clamp(t.ethRemain||0, 0, wasTotal);
+    const wasTotal = Math.max(1, t.ethorionTotal||1);
+    const wasRem = clamp(t.ethorionRemaining||0, 0, wasTotal);
     const ratio = wasTotal ? (wasRem/wasTotal) : 1;
 
-    t.ethTotal = n;
-    t.ethRemain = clamp(Math.round(n*ratio), 0, n);
-    if(t.ethRemain===0) t.ethRemain = Math.min(1,n);
+    t.ethorionTotal = n;
+    t.ethorionRemaining = clamp(Math.round(n*ratio), 0, n);
+    if(t.ethorionRemaining===0) t.ethorionRemaining = Math.min(1,n);
 
     save();
     renderAll();
-    showToast("OK", 1800);
-  }
-
-  // =========================
-  // Roulette pool selection (source)
-  // =========================
-  function getPoolBySource(){
-    const poolAll = state.tasks.filter(t=>!t.done && (t.ethRemain||0) > 0);
-
-    const src = state.ui.rouletteSource || "all";
-    if(src==="set"){
-      const sid = state.ui.activeSetId;
-      return poolAll.filter(t => t.setId === sid);
-    }
-    if(src==="last"){
-      const bid = state.lastBatchId;
-      if(!bid) return poolAll;
-      return poolAll.filter(t => t.batchId === bid);
-    }
-    return poolAll;
+    showToast("OK", 1600);
   }
 
   // =========================
   // Weighted roulette with energy/motivation
   // =========================
   function pickWeightedTask(){
-    const pool = getPoolBySource();
+    const pool = state.tasks.filter(t=>!t.done && (t.ethorionRemaining||0) > 0);
     if(!pool.length) return null;
 
     const E = state.energyProfile.level;      // 1..3
     const M = state.energyProfile.motivation; // 1..3
 
     const weights = pool.map(t=>{
-      const rem = Math.max(1, Math.ceil(t.ethRemain||1));
+      const rem = Math.max(1, Math.ceil(t.ethorionRemaining||1));
       const pr = (t.priority===3? 3 : t.priority===2? 2 : 1);
 
       let fit = 1.0;
       if(E===1){
-        fit *= (t.energyTag===1 ? 1.45 : t.energyTag===2 ? 0.95 : 0.55);
+        fit *= (t.energyTag===1 ? 1.55 : t.energyTag===2 ? 0.95 : 0.55);
       }else if(E===2){
-        fit *= (t.energyTag===1 ? 1.10 : t.energyTag===2 ? 1.25 : 0.95);
+        fit *= (t.energyTag===1 ? 1.10 : t.energyTag===2 ? 1.30 : 0.95);
       }else{
-        fit *= (t.energyTag===3 ? 1.30 : 1.05);
+        fit *= (t.energyTag===3 ? 1.35 : 1.05);
       }
 
       let mot = 1.0;
       if(M===1){
-        mot *= (rem<=2 ? 1.45 : rem<=4 ? 1.05 : 0.70);
+        mot *= (rem<=2 ? 1.55 : rem<=4 ? 1.05 : 0.70);
       }else if(M===2){
         mot *= (rem<=3 ? 1.15 : 1.0);
       }else{
@@ -1414,16 +1284,23 @@
     btnRoulette.disabled = true;
     btnRoulette.classList.add("spinning");
 
-    showToast(pick(ROULETTE_LINES), 1100);
-    const suspense = 650 + Math.floor(Math.random()*320);
+    setFloat("scan…");
+    showToast("Roulette…", 1100);
+
+    const suspense = 720 + Math.floor(Math.random()*420);
 
     setTimeout(()=>{
       const t = pickWeightedTask();
       if(t){
         state.focusId = t.id;
+        setFloat(pick(FLOAT_LOCK));
         showToast("CIBLE VERROUILLÉE.", 2200);
+        confettiDots(1.1);
+        flash(0.10);
+        maybeSurprise("roulette");
       }else{
         state.focusId = null;
+        setFloat("—");
         showToast("PLUS DE CIBLES.", 2200);
       }
 
@@ -1433,20 +1310,20 @@
 
       save();
       renderAll();
+      checkWin();
     }, suspense);
   }
 
   // =========================
-  // Sorting + drag reorder (list)
+  // Sorting + drag reorder (Liste)
   // =========================
-  function getActiveSorted(sortKey){
+  function getActiveSorted(){
     const items = state.tasks.filter(t=>!t.done);
-    const sort = sortKey || state.ui.sort || "order";
-
+    const sort = state.ui.sort || "order";
     if(sort==="prio"){
       items.sort((a,b)=>(b.priority||2)-(a.priority||2) || (a.order||0)-(b.order||0));
     }else if(sort==="eth"){
-      items.sort((a,b)=>(b.ethRemain||0)-(a.ethRemain||0) || (b.priority||2)-(a.priority||2));
+      items.sort((a,b)=>(b.ethorionRemaining||0)-(a.ethorionRemaining||0) || (b.priority||2)-(a.priority||2));
     }else if(sort==="cat"){
       items.sort((a,b)=> (a.category||"").localeCompare(b.category||"", "fr") || (a.order||0)-(b.order||0));
     }else{
@@ -1464,16 +1341,13 @@
   }
 
   // =========================
-  // Rendering: counters + focus
+  // Rendering
   // =========================
   function sumActiveEth(){
-    return state.tasks.reduce((a,t)=>a + (t.done?0:(t.ethRemain||0)), 0);
+    return state.tasks.reduce((a,t)=>a + (t.done?0:(t.ethorionRemaining||0)), 0);
   }
   function countActiveTasks(){
     return state.tasks.filter(t=>!t.done).length;
-  }
-  function countDoneTasks(){
-    return state.tasks.filter(t=>t.done).length;
   }
 
   function renderCounters(){
@@ -1486,85 +1360,72 @@
     const startE = state.day.startEth || leftEth;
 
     const elimEth = Math.max(0, startE - leftEth);
-    const doneTasks = Math.max(0, startT - leftTasks);
-    const pctTasks = clamp(Math.round((doneTasks / Math.max(1,startT))*100), 0, 100);
 
     startTasksEl.textContent = String(startT);
     leftTasksEl.textContent  = String(leftTasks);
     startEthEl.textContent   = String(startE);
     leftEthEl.textContent    = String(leftEth);
     elimEthEl.textContent    = String(elimEth);
-    doneTasksEl.textContent  = String(doneTasks);
-    pctTasksEl.textContent   = String(pctTasks);
 
     const denom = Math.max(1, startE);
     const pctLeft = clamp(Math.round((leftEth/denom)*100), 0, 100);
     gFill.style.width = `${pctLeft}%`;
-    gLabel.textContent = `${pctLeft}%`; // hidden by CSS
-
-    // show/hide chips
-    el("topChips").style.display = state.ui.showTopChips ? "flex" : "none";
-    el("focusChips").style.display = state.ui.showFocusChips ? "flex" : "none";
-    floatLine.style.display = state.ui.showFloatingLine ? "block" : "none";
+    gLabel.textContent = `${pctLeft}%`; // hidden, but kept for possible future toggles
 
     updateUndoRedo();
   }
 
   function renderFocus(){
     const t = getTask(state.focusId);
-
     if(!t){
       focusTitle.textContent = "CIBLE EN COURS DE RECHERCHE";
       focusMeta.textContent = "—";
-      focusEth.textContent = "0";
-      focusPrio.textContent = "—";
-      focusEnergy.textContent = "—";
-      focusPct.textContent = "100";
-
       tFill.style.width = "100%";
       tLabel.textContent = "100%";
 
       btnDego.disabled = true;
-      btnNotes.disabled = true;
+      btnNotesTask.disabled = true;
       btnDone.disabled = true;
       btnSkip.disabled = false;
 
-      btnDego.textContent = "Dégommer 1 ETH";
+      // button label
+      btnDego.textContent = "Dégommer 1 ethorion";
       return;
     }
 
     focusTitle.textContent = t.title;
 
     const hintMin = t.minutesHint ? ` · ${t.minutesHint} min` : "";
-    const srcTag = t.setId ? ` · set` : "";
-    focusMeta.textContent = `${t.category} · P${t.priority}${hintMin}${srcTag}`;
+    const pr = `P${t.priority}`;
+    const cat = t.category || "Sans catégorie";
+    focusMeta.textContent = `${cat} · ${pr}${hintMin}`;
 
-    focusEth.textContent = `${t.ethRemain}/${t.ethTotal}`;
-    focusPrio.textContent = String(t.priority);
-    focusEnergy.textContent = (t.energyTag===1 ? "basse" : t.energyTag===2 ? "moyenne" : "haute");
+    // Button label stays brutal & clear
+    btnDego.textContent = `Dégommer 1 ethorion (${t.ethorionRemaining}/${t.ethorionTotal})`;
 
-    const total = Math.max(1, t.ethTotal||1);
-    const rem = clamp(t.ethRemain||0, 0, total);
+    const total = Math.max(1, t.ethorionTotal||1);
+    const rem = clamp(t.ethorionRemaining||0, 0, total);
     const pctLeft = clamp(Math.round((rem/total)*100), 0, 100);
-    const pctDone = 100 - pctLeft;
-
     tFill.style.width = `${pctLeft}%`;
-    tLabel.textContent = `${pctLeft}%`;
-    focusPct.textContent = String(pctDone);
+    tLabel.textContent = `${pctLeft}%`; // hidden
 
     btnDego.disabled = false;
-    btnNotes.disabled = false;
+    btnNotesTask.disabled = false;
     btnDone.disabled = false;
 
-    btnDego.textContent = `Dégommer 1 ETH`;
+    if(!floatLine.textContent || floatLine.textContent==="—"){
+      setFloat(pick(FLOAT_IDLE));
+    }
   }
 
   function renderAll(){
+    // UI toggles
+    topbar.classList.toggle("hidden", !!state.ui.topbarHidden);
+    hint.classList.toggle("hidden", !!state.ui.hintHidden);
+
     renderCounters();
     renderFocus();
     renderDrawer();
-    renderFloatList();
-    refreshPoeticLine();
   }
 
   // =========================
@@ -1576,10 +1437,10 @@
     { key:"cats",    label:"Cat" },
     { key:"sets",    label:"Sets" },
     { key:"energie", label:"Énergie" },
-    { key:"aff",     label:"Affichage" },
     { key:"notes",   label:"Notes" },
     { key:"hist",    label:"Hist" },
-    { key:"rapport", label:"Rapport" }
+    { key:"rapport", label:"Rapport" },
+    { key:"ui",      label:"UI" }
   ];
 
   function setTab(key){
@@ -1599,6 +1460,12 @@
     });
   }
 
+  function esc(s){
+    return String(s ?? "").replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[c]));
+  }
+
   function miniBarPct(rem, total){
     total = Math.max(1, total||1);
     rem = clamp(rem||0, 0, total);
@@ -1610,18 +1477,18 @@
     row.className = "trow";
     row.dataset.id = t.id;
 
-    const pct = miniBarPct(t.ethRemain, t.ethTotal);
+    const pct = miniBarPct(t.ethorionRemaining, t.ethorionTotal);
 
     row.innerHTML = `
       <div class="trowTop">
         <div style="min-width:0;">
           <div class="tname ${t.done ? "done":""}">${esc(t.title)}</div>
           <div class="tmini">
-            <span>${esc(t.category)}</span>
+            <span>${esc(t.category || "Sans catégorie")}</span>
             <span>·</span>
-            <span>P${esc(String(t.priority))}</span>
+            <span>P${esc(String(t.priority || 2))}</span>
             <span>·</span>
-            <span>ETH ${esc(String(t.ethRemain))}/${esc(String(t.ethTotal))}</span>
+            <span>ETH ${esc(String(t.ethorionRemaining||0))}/${esc(String(t.ethorionTotal||0))}</span>
           </div>
         </div>
         <div class="tacts">
@@ -1641,7 +1508,7 @@
       const a = btn.dataset.a;
       btn.addEventListener("click", ()=>{
         if(a==="focus"){ setFocus(t.id); renderAll(); }
-        if(a==="eth"){ setEth(t.id); }
+        if(a==="eth"){ setEthorion(t.id); }
         if(a==="dup"){ duplicateTask(t.id); }
         if(a==="ok"){ finishTask(t.id); }
         if(a==="x"){ deleteTask(t.id); }
@@ -1666,23 +1533,14 @@
 - …"></textarea>
       <div class="rowBtns">
         <button class="btn" id="btnAdd">Ajouter</button>
-        <button class="btn" id="btnBaseline">Fixer départ</button>
       </div>
     `;
     const ta = card.querySelector("#inboxTA");
     const add = card.querySelector("#btnAdd");
-    const baseline = card.querySelector("#btnBaseline");
 
     add.addEventListener("click", ()=>{
-      addTasksFromText(ta.value, { setId: null });
+      addTasksFromText(ta.value);
       ta.value = "";
-    });
-
-    baseline.addEventListener("click", ()=>{
-      pushHistory("Fixer départ");
-      setDayBaseline("Départ fixé (manuel)");
-      renderAll();
-      showToast("Départ fixé.", 2000);
     });
 
     ta.addEventListener("keydown", (e)=>{
@@ -1726,12 +1584,10 @@
       state.ui.sort = sortSel.value;
       save();
       renderDrawer();
-      renderFloatList();
     });
 
     const list = wrap.querySelector("#taskList");
-    const items = getActiveSorted(state.ui.sort);
-
+    const items = getActiveSorted();
     const draggable = (state.ui.sort==="order");
 
     items.forEach(t=> list.appendChild(renderTaskRow(t, {draggable})));
@@ -1778,8 +1634,7 @@
 
         save();
         renderDrawer();
-        renderFloatList();
-        showToast("Ordre mis à jour.", 2200);
+        showToast("Ordre mis à jour.", 2000);
       });
     }
 
@@ -1787,7 +1642,7 @@
     state.tasks
       .filter(t=>t.done)
       .sort((a,b)=>(b.doneAt||0)-(a.doneAt||0))
-      .slice(0, 50)
+      .slice(0, 60)
       .forEach(t=> doneList.appendChild(renderTaskRow(t)));
 
     return wrap;
@@ -1809,13 +1664,13 @@
     wrap.className = "card";
     wrap.innerHTML = `<div class="cardTitle"><span>Catégories</span><span>clic pour ouvrir</span></div>`;
 
-    const items = getActiveSorted(state.ui.sort);
+    const items = getActiveSorted();
     const {m, keys} = groupByCategory(items);
 
     keys.forEach(cat=>{
       const det = document.createElement("details");
       det.open = false;
-      const sumEth = m.get(cat).reduce((a,t)=>a+(t.ethRemain||0),0);
+      const sumEth = m.get(cat).reduce((a,t)=>a+(t.ethorionRemaining||0),0);
       const sum = document.createElement("summary");
       sum.textContent = `${cat} — ETH ${sumEth}`;
       det.appendChild(sum);
@@ -1838,18 +1693,16 @@
     const wrap = document.createElement("div");
     wrap.className = "card";
     wrap.innerHTML = `
-      <div class="cardTitle"><span>Sets</span><span>appliquer = ajouter</span></div>
-      <div class="tmini" style="margin-top:-4px;">
-        Roulette source :
-        <b>${esc(state.ui.rouletteSource==="all" ? "toutes" : state.ui.rouletteSource==="set" ? "set choisi" : "dernier ajout")}</b>
-      </div>
+      <div class="cardTitle"><span>Sets</span><span>préenregistrés + perso</span></div>
       <div class="list" id="setsList"></div>
-      <div class="rowBtns">
-        <button class="btn" id="btnNewSet">+ Set</button>
-      </div>
+      <details>
+        <summary>Créer / éditer set</summary>
+        <div class="inside" id="setEditorHost"></div>
+      </details>
     `;
 
     const list = wrap.querySelector("#setsList");
+    const host = wrap.querySelector("#setEditorHost");
 
     state.sets.forEach(s=>{
       const row = document.createElement("div");
@@ -1869,23 +1722,20 @@
       `;
 
       row.querySelector('[data-a="apply"]').addEventListener("click", ()=>{
-        addTasksFromText((s.lines||[]).join("\n"), { setId: s.id });
-        state.ui.activeSetId = s.id;
-        save();
-        showToast("Set appliqué (ajouté).", 2400);
+        addTasksFromText((s.lines||[]).join("\n"));
+        showToast("Set appliqué.", 2000);
       });
 
       row.querySelector('[data-a="edit"]').addEventListener("click", ()=>{
-        openSetEditor(s.id);
+        host.innerHTML = "";
+        host.appendChild(renderSetEditor(s.id));
+        row.closest("details")?.setAttribute("open","true");
       });
 
       row.querySelector('[data-a="del"]').addEventListener("click", ()=>{
         if(!confirm("Supprimer set ?")) return;
         pushHistory("Supprimer set");
         state.sets = state.sets.filter(x=>x.id!==s.id);
-        if(state.ui.activeSetId===s.id){
-          state.ui.activeSetId = state.sets[0]?.id || null;
-        }
         save();
         renderDrawer();
       });
@@ -1893,35 +1743,39 @@
       list.appendChild(row);
     });
 
-    wrap.querySelector("#btnNewSet").addEventListener("click", ()=> openSetEditor(null));
+    // empty editor by default
+    host.appendChild(renderSetEditor(null));
+
     return wrap;
   }
 
-  function openSetEditor(setId){
+  function renderSetEditor(setId){
     const s = setId ? state.sets.find(x=>x.id===setId) : null;
 
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
-      <div class="cardTitle"><span>${s ? "Éditer set" : "Nouveau set"}</span><span>lignes avec tiret = tâches</span></div>
+      <div class="cardTitle"><span>${s ? "Éditer set" : "Nouveau set"}</span><span>lignes “-” = tâches</span></div>
       <input type="text" id="setName" placeholder="Nom du set" value="${esc(s ? s.name : "")}">
       <textarea id="setLines" placeholder="Catégorie
-- tâche
+- tâche – 3 ethorions – importance 2
 - tâche">${esc(s ? (s.lines||[]).join("\n") : "")}</textarea>
       <div class="rowBtns">
         <button class="btn" id="btnSaveSet">Enregistrer</button>
-        <button class="btn" id="btnCancelSet">Annuler</button>
+        <button class="btn" id="btnApplySetNow">Appliquer</button>
       </div>
     `;
 
     const name = card.querySelector("#setName");
     const lines = card.querySelector("#setLines");
+    const saveBtn = card.querySelector("#btnSaveSet");
+    const applyBtn = card.querySelector("#btnApplySetNow");
 
-    card.querySelector("#btnSaveSet").addEventListener("click", ()=>{
-      const n = cleanLine(name.value).slice(0,60);
+    saveBtn.addEventListener("click", ()=>{
+      const n = cleanLine(name.value).slice(0,40);
       const ls = String(lines.value||"").split(/\r?\n/).map(cleanLine).filter(Boolean);
-      if(!n){ showToast("Nom ?", 2200); return; }
-      if(!ls.length){ showToast("Lignes ?", 2200); return; }
+      if(!n){ showToast("Nom ?", 2000); return; }
+      if(!ls.length){ showToast("Lignes ?", 2000); return; }
 
       pushHistory("Enregistrer set");
 
@@ -1929,18 +1783,20 @@
         s.name = n;
         s.lines = ls;
       }else{
-        const newid = "set_"+uid();
-        state.sets.push({ id: newid, name:n, lines: ls });
-        state.ui.activeSetId = newid;
+        state.sets.push({ id:"set_"+uid(), name:n, lines: ls });
       }
       save();
       renderDrawer();
-      showToast("OK", 2000);
+      showToast("OK", 1800);
     });
 
-    card.querySelector("#btnCancelSet").addEventListener("click", ()=> renderDrawer());
-    drawerBody.innerHTML = "";
-    drawerBody.appendChild(card);
+    applyBtn.addEventListener("click", ()=>{
+      if(!lines.value.trim()){ showToast("Rien à appliquer.", 1800); return; }
+      addTasksFromText(lines.value);
+      showToast("Set appliqué.", 1800);
+    });
+
+    return card;
   }
 
   function renderDrawerEnergy(){
@@ -1974,134 +1830,91 @@
       state.energyProfile.motivation = parseInt(mot.value,10);
       save();
       renderAll();
-      showToast("OK", 2200);
+      showToast("OK", 1800);
+      setFloat(pick(FLOAT_IDLE));
     });
 
     return wrap;
-  }
-
-  function renderDrawerAffichage(){
-    const wrap = document.createElement("div");
-    wrap.className = "card";
-
-    const setOptions = state.sets.map(s => `<option value="${esc(s.id)}">${esc(s.name)}</option>`).join("");
-
-    wrap.innerHTML = `
-      <div class="cardTitle"><span>Affichage</span><span>épuré</span></div>
-
-      <label class="tmini" style="display:flex; gap:10px; align-items:center; justify-content:space-between;">
-        <span>Chips du haut</span>
-        <input id="togTop" type="checkbox" ${state.ui.showTopChips ? "checked":""}/>
-      </label>
-
-      <label class="tmini" style="display:flex; gap:10px; align-items:center; justify-content:space-between;">
-        <span>Chips de focus</span>
-        <input id="togFocus" type="checkbox" ${state.ui.showFocusChips ? "checked":""}/>
-      </label>
-
-      <label class="tmini" style="display:flex; gap:10px; align-items:center; justify-content:space-between;">
-        <span>Phrase flottante</span>
-        <input id="togLine" type="checkbox" ${state.ui.showFloatingLine ? "checked":""}/>
-      </label>
-
-      <label class="tmini" style="display:flex; gap:10px; align-items:center; justify-content:space-between;">
-        <span>Mode compact</span>
-        <input id="togCompact" type="checkbox" ${state.ui.compact ? "checked":""}/>
-      </label>
-
-      <div class="cardTitle" style="margin-top:8px;"><span>Roulette</span><span>source</span></div>
-
-      <select id="rouletteSrc">
-        <option value="all">Source: toutes les tâches actives</option>
-        <option value="set">Source: set choisi</option>
-        <option value="last">Source: dernier ajout</option>
-      </select>
-
-      <select id="activeSetSel">
-        ${setOptions}
-      </select>
-
-      <div class="rowBtns">
-        <button class="btn" id="btnApplyAff">Appliquer</button>
-      </div>
-    `;
-
-    wrap.querySelector("#rouletteSrc").value = state.ui.rouletteSource || "all";
-    wrap.querySelector("#activeSetSel").value = state.ui.activeSetId || (state.sets[0]?.id || "");
-
-    wrap.querySelector("#btnApplyAff").addEventListener("click", ()=>{
-      pushHistory("Affichage");
-      state.ui.showTopChips = !!wrap.querySelector("#togTop").checked;
-      state.ui.showFocusChips = !!wrap.querySelector("#togFocus").checked;
-      state.ui.showFloatingLine = !!wrap.querySelector("#togLine").checked;
-      state.ui.compact = !!wrap.querySelector("#togCompact").checked;
-
-      state.ui.rouletteSource = wrap.querySelector("#rouletteSrc").value;
-      state.ui.activeSetId = wrap.querySelector("#activeSetSel").value;
-
-      save();
-      applyCompactMode();
-      renderAll();
-      showToast("OK", 2000);
-    });
-
-    return wrap;
-  }
-
-  function applyCompactMode(){
-    // compact: shrink some gaps slightly without changing layout logic
-    const on = !!state.ui.compact;
-    focusCard.style.gap = on ? "10px" : "14px";
   }
 
   function renderDrawerNotes(){
     const wrap = document.createElement("div");
     wrap.className = "card";
+
+    const t = getTask(state.focusId);
+
     wrap.innerHTML = `
       <div class="cardTitle"><span>Notes</span><span>persistantes</span></div>
 
-      <textarea id="dailyNotes" placeholder="Notes au vol (gardées)…">${esc(state.notes.daily||"")}</textarea>
+      <details ${state.dayNotes ? "open" : ""}>
+        <summary>Notes jour (ne s’effacent pas)</summary>
+        <div class="inside">
+          <textarea id="dayNotesTA" placeholder="Notes au vol… (gardées dans le système)">${esc(state.dayNotes||"")}</textarea>
+          <div class="rowBtns">
+            <button class="btn" id="btnSaveDayNotes">Enregistrer</button>
+            <button class="btn" id="btnCopyDayNotes">Copier</button>
+            <button class="btn" id="btnMailtoDayNotes">Mailto</button>
+          </div>
+          <div class="tmini">“Mailto” ouvre ton client mail avec le texte pré-rempli (pas d’envoi automatique).</div>
+        </div>
+      </details>
 
-      <input type="text" id="emailTo" placeholder="Optionnel : email destination (pour mailto)" value="${esc(state.notes.emailTo||"")}"/>
-
-      <div class="rowBtns">
-        <button class="btn" id="btnSaveDaily">Enregistrer</button>
-        <button class="btn" id="btnMail">Préparer mail</button>
-        <button class="btn" id="btnCopy">Copier</button>
-      </div>
-
-      <div class="tmini">
-        “Préparer mail” ouvre ton client mail avec un <b>mailto:</b> (pas d’envoi automatique ici).
-      </div>
+      <details ${t && t.notes ? "open" : ""}>
+        <summary>Notes tâche (cible en cours)</summary>
+        <div class="inside">
+          <div class="tmini">${t ? esc(t.title) : "Aucune cible"}</div>
+          <textarea id="taskNotesTA" placeholder="Notes tâche…">${esc(t ? (t.notes||"") : "")}</textarea>
+          <div class="rowBtns">
+            <button class="btn" id="btnSaveTaskNotes" ${t ? "" : "disabled"}>Enregistrer</button>
+            <button class="btn" id="btnCopyTaskNotes" ${t ? "" : "disabled"}>Copier</button>
+          </div>
+        </div>
+      </details>
     `;
 
-    const ta = wrap.querySelector("#dailyNotes");
-    const emailTo = wrap.querySelector("#emailTo");
+    const dayTA = wrap.querySelector("#dayNotesTA");
+    const taskTA = wrap.querySelector("#taskNotesTA");
 
-    wrap.querySelector("#btnSaveDaily").addEventListener("click", ()=>{
-      pushHistory("Notes (jour) enregistrées");
-      state.notes.daily = ta.value.slice(0, 20000);
-      state.notes.emailTo = cleanLine(emailTo.value).slice(0, 140);
+    wrap.querySelector("#btnSaveDayNotes").addEventListener("click", ()=>{
+      pushHistory("Notes jour");
+      state.dayNotes = String(dayTA.value||"").slice(0, 20000);
       save();
-      showToast("Notes gardées.", 2200);
+      showToast("Notes jour OK.", 1800);
     });
 
-    wrap.querySelector("#btnCopy").addEventListener("click", async ()=>{
+    wrap.querySelector("#btnCopyDayNotes").addEventListener("click", async ()=>{
       try{
-        await navigator.clipboard.writeText(ta.value || "");
-        showToast("Copié.", 1800);
+        await navigator.clipboard.writeText(String(dayTA.value||""));
+        showToast("Copié.", 1400);
       }catch{
-        showToast("Copie impossible ici.", 2200);
+        showToast("Copie impossible (navigateur).", 2000);
       }
     });
 
-    wrap.querySelector("#btnMail").addEventListener("click", ()=>{
-      const to = cleanLine(emailTo.value);
-      const subject = encodeURIComponent("Notes – The Eliminator");
-      const body = encodeURIComponent(ta.value || "");
-      const href = `mailto:${encodeURIComponent(to||"")}?subject=${subject}&body=${body}`;
-      window.location.href = href;
+    wrap.querySelector("#btnMailtoDayNotes").addEventListener("click", ()=>{
+      const subject = encodeURIComponent(`Notes — ${state.day.id}`);
+      const body = encodeURIComponent(String(dayTA.value||""));
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
     });
+
+    if(t){
+      wrap.querySelector("#btnSaveTaskNotes").addEventListener("click", ()=>{
+        pushHistory("Notes tâche");
+        t.notes = String(taskTA.value||"").slice(0, 20000);
+        save();
+        showToast("Notes tâche OK.", 1800);
+        renderAll();
+      });
+
+      wrap.querySelector("#btnCopyTaskNotes").addEventListener("click", async ()=>{
+        try{
+          await navigator.clipboard.writeText(String(taskTA.value||""));
+          showToast("Copié.", 1400);
+        }catch{
+          showToast("Copie impossible (navigateur).", 2000);
+        }
+      });
+    }
 
     return wrap;
   }
@@ -2136,30 +1949,32 @@
     const done = state.tasks.filter(t=>t.done);
 
     const leftTasks = active.length;
-    const leftEth = active.reduce((a,t)=>a+(t.ethRemain||0),0);
+    const leftEth = active.reduce((a,t)=>a+(t.ethorionRemaining||0),0);
 
     const startT = state.day.startTasks || 0;
     const startE = state.day.startEth || 0;
-    const doneTasks = Math.max(0, startT - leftTasks);
+    const doneTasks = done.length;
     const elimEth = Math.max(0, startE - leftEth);
-    const pct = clamp(Math.round((doneTasks / Math.max(1,startT))*100), 0, 100);
 
     const box = document.createElement("div");
     box.className = "trow";
     box.innerHTML = `
-      <div class="tname">Aujourd’hui</div>
-      <div class="tmini">Tâches: ${esc(String(doneTasks))}/${esc(String(startT))} (${esc(String(pct))}%)</div>
-      <div class="tmini">ETH: éliminé ${esc(String(elimEth))} · reste ${esc(String(leftEth))}/${esc(String(startE))}</div>
+      <div class="tname">Aujourd’hui (${esc(state.day.id)})</div>
+      <div class="tmini">Départ: ${esc(String(startT))} tâches · ${esc(String(startE))} ETH</div>
+      <div class="tmini">Reste: ${esc(String(leftTasks))} tâches · ${esc(String(leftEth))} ETH</div>
+      <div class="tmini">Éliminé: ${esc(String(elimEth))} ETH · Terminé: ${esc(String(doneTasks))} tâches</div>
     `;
+
     wrap.appendChild(box);
 
+    // by category
     const byCat = {};
     state.tasks.forEach(t=>{
       const c = t.category || "Sans catégorie";
       if(!byCat[c]) byCat[c] = { n:0, total:0, left:0 };
       byCat[c].n++;
-      byCat[c].total += (t.ethTotal||0);
-      byCat[c].left += (t.done?0:(t.ethRemain||0));
+      byCat[c].total += (t.ethorionTotal||0);
+      byCat[c].left += (t.done?0:(t.ethorionRemaining||0));
     });
 
     const list = document.createElement("div");
@@ -2175,7 +1990,118 @@
       list.appendChild(row);
     });
 
+    // quick copy
+    const txt = [
+      `ELIMINATOR — Rapport du ${state.day.id}`,
+      `Départ: ${startT} tâches · ${startE} ETH`,
+      `Reste: ${leftTasks} tâches · ${leftEth} ETH`,
+      `Éliminé: ${elimEth} ETH · Terminé: ${doneTasks} tâches`,
+      "",
+      ...Object.keys(byCat).sort((a,b)=>a.localeCompare(b,"fr")).map(c=>{
+        const r = byCat[c];
+        return `${c}: ${r.n} tâches · ETH ${r.left}/${r.total}`;
+      })
+    ].join("\n");
+
+    const actions = document.createElement("div");
+    actions.className = "rowBtns";
+    actions.innerHTML = `
+      <button class="btn" id="btnCopyReport">Copier</button>
+      <button class="btn" id="btnMailtoReport">Mailto</button>
+    `;
+
+    actions.querySelector("#btnCopyReport").addEventListener("click", async ()=>{
+      try{
+        await navigator.clipboard.writeText(txt);
+        showToast("Rapport copié.", 1600);
+      }catch{
+        showToast("Copie impossible (navigateur).", 2000);
+      }
+    });
+
+    actions.querySelector("#btnMailtoReport").addEventListener("click", ()=>{
+      const subject = encodeURIComponent(`Rapport — ${state.day.id}`);
+      const body = encodeURIComponent(txt);
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    });
+
     wrap.appendChild(list);
+    wrap.appendChild(actions);
+    return wrap;
+  }
+
+  function renderDrawerUI(){
+    const wrap = document.createElement("div");
+    wrap.className = "card";
+    wrap.innerHTML = `
+      <div class="cardTitle"><span>UI</span><span>options affichage</span></div>
+
+      <div class="trow">
+        <div class="tname">Affichage</div>
+        <div class="tmini">Moins d’encadrés = déjà fait côté centre. Ici tu règles ce qui apparaît.</div>
+      </div>
+
+      <div class="trow">
+        <div class="trowTop">
+          <div>
+            <div class="tname">Topbar</div>
+            <div class="tmini">Masquer la barre du haut (compteurs + menu).</div>
+          </div>
+          <div class="tacts">
+            <button class="btn" id="btnToggleTopbar">${state.ui.topbarHidden ? "Afficher" : "Masquer"}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="trow">
+        <div class="trowTop">
+          <div>
+            <div class="tname">Hint</div>
+            <div class="tmini">Masquer la ligne d’aide en bas.</div>
+          </div>
+          <div class="tacts">
+            <button class="btn" id="btnToggleHint">${state.ui.hintHidden ? "Afficher" : "Masquer"}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="trow">
+        <div class="trowTop">
+          <div>
+            <div class="tname">Reset</div>
+            <div class="tmini">Supprime tout (tâches, sets perso, notes, historique). Irréversible.</div>
+          </div>
+          <div class="tacts">
+            <button class="btn" id="btnHardReset">Reset</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    wrap.querySelector("#btnToggleTopbar").addEventListener("click", ()=>{
+      pushHistory("UI topbar");
+      state.ui.topbarHidden = !state.ui.topbarHidden;
+      save();
+      renderAll();
+    });
+
+    wrap.querySelector("#btnToggleHint").addEventListener("click", ()=>{
+      pushHistory("UI hint");
+      state.ui.hintHidden = !state.ui.hintHidden;
+      save();
+      renderAll();
+    });
+
+    wrap.querySelector("#btnHardReset").addEventListener("click", ()=>{
+      if(!confirm("Reset total ?")) return;
+      localStorage.removeItem(LS_KEY);
+      state = initial();
+      save();
+      closeDrawer();
+      renderAll();
+      showToast("Reset OK.", 2000);
+    });
+
     return wrap;
   }
 
@@ -2186,4 +2112,63 @@
     const tab = state.ui.activeTab || "inbox";
     if(tab==="inbox") drawerBody.appendChild(renderDrawerInbox());
     else if(tab==="liste") drawerBody.appendChild(renderDrawerList());
-    else if(tab==="cats
+    else if(tab==="cats") drawerBody.appendChild(renderDrawerCats());
+    else if(tab==="sets") drawerBody.appendChild(renderDrawerSets());
+    else if(tab==="energie") drawerBody.appendChild(renderDrawerEnergy());
+    else if(tab==="notes") drawerBody.appendChild(renderDrawerNotes());
+    else if(tab==="hist") drawerBody.appendChild(renderDrawerHist());
+    else if(tab==="rapport") drawerBody.appendChild(renderDrawerRapport());
+    else if(tab==="ui") drawerBody.appendChild(renderDrawerUI());
+    else drawerBody.appendChild(renderDrawerInbox());
+  }
+
+  // =========================
+  // Drawer open/close + swipe close
+  // =========================
+  function openDrawer(){
+    overlay.classList.add("show");
+    drawer.classList.add("show");
+    renderDrawer();
+  }
+  function closeDrawer(){
+    overlay.classList.remove("show");
+    drawer.classList.remove("show");
+  }
+
+  btnMenu.addEventListener("click", openDrawer);
+  btnClose.addEventListener("click", closeDrawer);
+  overlay.addEventListener("click", closeDrawer);
+
+  // swipe to close (left panel)
+  let touchX0 = null;
+  drawer.addEventListener("pointerdown", (e)=>{
+    if(e.pointerType==="mouse") return;
+    touchX0 = e.clientX;
+  });
+  drawer.addEventListener("pointermove", (e)=>{
+    if(touchX0===null) return;
+    const dx = e.clientX - touchX0;
+    if(dx < -80){
+      touchX0 = null;
+      closeDrawer();
+    }
+  });
+  drawer.addEventListener("pointerup", ()=> touchX0 = null);
+  drawer.addEventListener("pointercancel", ()=> touchX0 = null);
+
+  // =========================
+  // Buttons wiring
+  // =========================
+  btnNewDay.addEventListener("click", newDay);
+  btnRoulette.addEventListener("click", roulette);
+  btnDego.addEventListener("click", degoOne);
+
+  btnNotesTask.addEventListener("click", ()=>{
+    openDrawer();
+    setTab("notes");
+    showToast("Notes: tâche + jour.", 1400);
+  });
+  btnNotesDay.addEventListener("click", ()=>{
+    openDrawer();
+    setTab("notes");
+    showToast("Notes
