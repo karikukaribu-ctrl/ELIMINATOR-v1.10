@@ -24,10 +24,6 @@
       --shadow:0 18px 60px rgba(0,0,0,0.62);
       --r:24px;
 
-      --ok: rgba(242,242,242,0.92);
-      --warn: rgba(255,255,255,0.84);
-      --boom: rgba(255,255,255,0.14);
-
       --glass: blur(10px);
     }
 
@@ -45,18 +41,49 @@
     }
 
     /* ====== FX Canvas ====== */
-    canvas#fx{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      z-index: 110;
-    }
+    canvas#fx{ position:fixed; inset:0; pointer-events:none; z-index: 110; }
 
     /* ====== App Shell ====== */
     .shell{
       min-height:100vh;
       display:grid;
-      grid-template-rows: auto 1fr auto;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 8px;
+    }
+
+    /* ====== Header OUTSIDE the panel ====== */
+    .hero{
+      padding: 18px 14px 0;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      gap: 8px;
+      user-select:none;
+    }
+    .hero h1{
+      margin:0;
+      font-size: clamp(34px, 6vw, 70px);
+      font-weight: 1100;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      line-height:1;
+      text-shadow: 0 12px 40px rgba(0,0,0,0.55);
+    }
+    .hero p{
+      margin:0;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing:0.16em;
+      text-transform: uppercase;
+    }
+    .floatLine{
+      min-height: 18px;
+      color: rgba(242,242,242,0.86);
+      font-weight: 900;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      font-size: 12px;
+      opacity: 0.92;
     }
 
     /* ====== Top minimal bar ====== */
@@ -64,11 +91,10 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      padding: 12px 14px;
+      padding: 10px 14px;
       gap:10px;
     }
     .topbar.hidden{ display:none; }
-
     .topbar .left, .topbar .right{
       display:flex; gap:10px; align-items:center; flex-wrap:wrap;
     }
@@ -116,7 +142,7 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding: 10px 14px 22px;
+      padding: 0 14px 10px;
     }
 
     .focusCard{
@@ -136,44 +162,7 @@
       overflow:hidden;
     }
 
-    /* Brand */
-    .brand{
-      text-align:center;
-      display:grid;
-      gap: 6px;
-      margin-top: 2px;
-    }
-    .brand h1{
-      margin:0;
-      font-size: clamp(34px, 6vw, 64px);
-      font-weight: 1100;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      line-height:1;
-      text-shadow: 0 12px 40px rgba(0,0,0,0.55);
-    }
-    .brand p{
-      margin:0;
-      color: var(--muted);
-      font-size: 12px;
-      letter-spacing:0.16em;
-      text-transform: uppercase;
-    }
-
-    /* Floating surprise line (above actions) */
-    .floatLine{
-      text-align:center;
-      min-height: 18px;
-      color: rgba(242,242,242,0.86);
-      font-weight: 900;
-      letter-spacing: 0.10em;
-      text-transform: uppercase;
-      font-size: 12px;
-      opacity: 0.92;
-      user-select:none;
-    }
-
-    /* Big global bar (NO % label visible) */
+    /* Big global bar (label hidden) */
     .barWrap{
       border-radius: 999px;
       height: 26px;
@@ -188,7 +177,7 @@
       background: linear-gradient(90deg, var(--accent1), var(--accent2));
       transition: width 240ms ease;
     }
-    .barLabel{ display:none; } /* demandé: pas de % visible */
+    .barLabel{ display:none; }
 
     /* Focus task area */
     .target{
@@ -198,8 +187,8 @@
       align-items:center;
     }
     .targetTitle{
-      font-size: clamp(20px, 3.4vw, 30px);
-      font-weight: 1000;
+      font-size: clamp(22px, 3.6vw, 34px);
+      font-weight: 1100;
       line-height:1.15;
       word-break: break-word;
       padding: 0 6px;
@@ -211,7 +200,7 @@
       line-height:1.2;
     }
 
-    /* Small task bar (NO % label visible) */
+    /* Small task bar (label hidden) */
     .sbarWrap{
       border-radius: 999px;
       height: 12px;
@@ -228,9 +217,9 @@
       background: linear-gradient(90deg, rgba(242,242,242,0.82), rgba(174,183,199,0.70));
       transition: width 200ms ease;
     }
-    .sbarLabel{ display:none; } /* demandé: pas de % visible */
+    .sbarLabel{ display:none; }
 
-    /* ====== Actions: roulette + BIG central dego ====== */
+    /* Actions */
     .actions{
       display:flex;
       justify-content:center;
@@ -240,10 +229,8 @@
       margin-top: 6px;
     }
 
-    /* Roulette big, casino vibe */
     .btnRoulette{
-      width: 108px;
-      height: 108px;
+      width: 112px; height: 112px;
       border-radius: 999px;
       border:1px solid rgba(242,242,242,0.22);
       background:
@@ -260,18 +247,8 @@
       position:relative;
       box-shadow: 0 14px 40px rgba(0,0,0,0.50);
     }
-    .btnRoulette .ring{
-      position:absolute; inset:12px;
-      border-radius: 999px;
-      border:2px dashed rgba(255,255,255,0.18);
-      opacity:0.80;
-    }
-    .btnRoulette .inner{
-      position:absolute; inset:26px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,0.10);
-      opacity:0.85;
-    }
+    .btnRoulette .ring{ position:absolute; inset:12px; border-radius:999px; border:2px dashed rgba(255,255,255,0.18); opacity:0.80; }
+    .btnRoulette .inner{ position:absolute; inset:26px; border-radius:999px; border:1px solid rgba(255,255,255,0.10); opacity:0.85; }
     .btnRoulette:hover{ border-color: rgba(242,242,242,0.36); }
     .btnRoulette:active{ transform: translateY(1px); }
     .btnRoulette:disabled{ opacity:0.5; cursor:not-allowed; }
@@ -280,7 +257,6 @@
     @keyframes spin{ from{ transform: rotate(0deg);} to{ transform: rotate(360deg);} }
     @keyframes spin2{ from{ transform: rotate(360deg);} to{ transform: rotate(0deg);} }
 
-    /* Big central dego button */
     .btnDego{
       border:1px solid rgba(242,242,242,0.18);
       background:
@@ -295,16 +271,15 @@
       font-weight: 1100;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      min-height: 70px;
-      min-width: min(660px, 86vw);
+      min-height: 72px;
+      min-width: min(700px, 86vw);
       box-shadow: 0 14px 40px rgba(0,0,0,0.45);
       position:relative;
       overflow:hidden;
     }
     .btnDego::after{
       content:"";
-      position:absolute;
-      inset:-2px;
+      position:absolute; inset:-2px;
       background: radial-gradient(520px 120px at 50% 30%, rgba(242,242,242,0.10), transparent 60%);
       opacity:0.75;
       pointer-events:none;
@@ -342,18 +317,17 @@
     .btn:hover{ border-color: rgba(255,255,255,0.18); }
     .btn:active{ transform: translateY(1px); }
 
-    /* Footer hint */
     .hint{
       text-align:center;
       color: var(--muted);
       font-size: 12px;
       line-height:1.25;
-      padding: 10px 14px 18px;
+      padding: 0 14px 18px;
       opacity:0.95;
     }
     .hint.hidden{ display:none; }
 
-    /* ====== Drawer (menu translucide) ====== */
+    /* ====== Drawer ====== */
     .overlay{
       position:fixed; inset:0;
       background: rgba(0,0,0,0.56);
@@ -365,10 +339,9 @@
     .overlay.show{ opacity:1; pointer-events:auto; }
 
     .drawer{
-      position:fixed;
-      top:0; left:0;
+      position:fixed; top:0; left:0;
       height:100vh;
-      width: min(620px, 94vw);
+      width: min(640px, 94vw);
       background:
         radial-gradient(900px 420px at 40% 0%, rgba(242,242,242,0.14), transparent 62%),
         linear-gradient(180deg, rgba(18,22,37,0.90), rgba(10,12,22,0.90));
@@ -398,11 +371,9 @@
       color: var(--muted);
     }
 
-    .tabs{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
+    /* Menu buttons INSIDE drawer (these must be functional) */
+    .menuRow{
+      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
     }
     .tab{
       border:1px solid rgba(255,255,255,0.10);
@@ -419,13 +390,7 @@
     }
     .tab.active{ border-color: rgba(242,242,242,0.26); }
 
-    .drawerBody{
-      overflow:auto;
-      padding-right: 4px;
-      display:grid;
-      gap: 12px;
-      align-content:start;
-    }
+    .drawerBody{ overflow:auto; padding-right: 4px; display:grid; gap: 12px; align-content:start; }
 
     .card{
       border:1px solid rgba(255,255,255,0.08);
@@ -457,17 +422,10 @@
       outline:none;
       font-size:13px;
     }
-    textarea{ width:100%; min-height: 140px; resize: vertical; line-height:1.35; }
+    textarea{ width:100%; min-height: 160px; resize: vertical; line-height:1.35; }
     textarea:focus, select:focus, input:focus{ border-color: rgba(242,242,242,0.22); }
 
-    .rowBtns{
-      display:flex;
-      gap:10px;
-      justify-content:flex-end;
-      flex-wrap:wrap;
-    }
-
-    /* Lists */
+    .rowBtns{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; }
     .list{ display:grid; gap:8px; }
 
     .trow{
@@ -478,35 +436,10 @@
       display:grid;
       gap:8px;
     }
-
-    .trowTop{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:flex-start;
-    }
-    .tname{
-      font-weight: 950;
-      font-size: 14px;
-      line-height:1.2;
-      word-break: break-word;
-    }
-    .tmini{
-      color: var(--muted);
-      font-size: 12px;
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-      line-height:1.15;
-    }
-    .tacts{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-      align-items:center;
-    }
+    .trowTop{ display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+    .tname{ font-weight: 950; font-size: 14px; line-height:1.2; word-break: break-word; }
+    .tmini{ color: var(--muted); font-size: 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; line-height:1.15; }
+    .tacts{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; align-items:center; }
     .done{ text-decoration: line-through; opacity:0.55; }
 
     .sbarMiniWrap{
@@ -539,13 +472,8 @@
       font-size: 11px;
       user-select:none;
     }
-    details > .inside{
-      padding: 10px 12px 12px;
-      display:grid;
-      gap:10px;
-    }
+    details > .inside{ padding: 10px 12px 12px; display:grid; gap:10px; }
 
-    /* Toast */
     .toast{
       position:fixed;
       left:50%;
@@ -567,55 +495,14 @@
       -webkit-backdrop-filter: var(--glass);
       backdrop-filter: var(--glass);
     }
-    .toast.show{
-      opacity:1;
-      transform: translateX(-50%) translateY(-6px);
-    }
+    .toast.show{ opacity:1; transform: translateX(-50%) translateY(-6px); }
 
-    /* End overlay (big win) */
-    .win{
-      position:fixed;
-      inset:0;
-      display:none;
-      place-items:center;
-      z-index: 130;
-      background: rgba(0,0,0,0.60);
-      -webkit-backdrop-filter: blur(12px);
-      backdrop-filter: blur(12px);
-    }
-    .win.show{ display:grid; }
-    .winCard{
-      width: min(900px, 92vw);
-      border-radius: 26px;
-      border:1px solid rgba(242,242,242,0.12);
-      background:
-        radial-gradient(900px 420px at 50% 0%, rgba(242,242,242,0.16), transparent 62%),
-        linear-gradient(180deg, rgba(18,22,37,0.92), rgba(10,12,22,0.92));
-      box-shadow: var(--shadow);
-      padding: 18px;
-      text-align:center;
-      display:grid;
-      gap:10px;
-    }
-    .winTitle{
-      font-weight: 1100;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      font-size: clamp(20px, 3.6vw, 34px);
-    }
-    .winText{
-      color: rgba(242,242,242,0.86);
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      line-height: 1.35;
-      font-size: 14px;
-    }
-
-    /* Responsive tweaks */
+    /* Responsive */
     @media (max-width: 520px){
       .btnDego{ min-width: 92vw; }
       .focusCard{ padding: 16px; }
-      .btnRoulette{ width: 96px; height:96px; }
+      .btnRoulette{ width: 98px; height:98px; }
+      .hero h1{ letter-spacing: 0.14em; }
     }
   </style>
 </head>
@@ -624,9 +511,17 @@
   <canvas id="fx"></canvas>
 
   <div class="shell">
+
+    <!-- TITLE / SUBTITLE / FLOATING LINE OUTSIDE PANEL -->
+    <header class="hero">
+      <h1>ELIMINATOR</h1>
+      <p>Dégommez-les tous!</p>
+      <div class="floatLine" id="floatLine">—</div>
+    </header>
+
     <div class="topbar" id="topbar">
       <div class="left">
-        <button class="iconbtn" id="btnMenu" aria-label="Menu">☰</button>
+        <button class="iconbtn" id="btnMenu" aria-label="Menu">MENU</button>
         <button class="iconbtn" id="btnNewDay">Nouveau jour</button>
       </div>
 
@@ -640,12 +535,6 @@
 
     <div class="stage">
       <section class="focusCard" aria-label="Focus">
-        <div class="brand">
-          <h1>ELIMINATOR</h1>
-          <p>Dégommez-les tous</p>
-        </div>
-
-        <!-- BIG GLOBAL BAR (remaining % but label hidden) -->
         <div class="barWrap" aria-label="Progression globale">
           <div class="barFill" id="gFill"></div>
           <div class="barLabel" id="gLabel">100%</div>
@@ -655,14 +544,10 @@
           <div class="targetTitle" id="focusTitle">CIBLE EN COURS DE RECHERCHE</div>
           <div class="targetMeta" id="focusMeta">—</div>
 
-          <!-- Small task bar -->
           <div class="sbarWrap" aria-label="Progression tâche">
             <div class="sbarFill" id="tFill"></div>
             <div class="sbarLabel" id="tLabel">100%</div>
           </div>
-
-          <!-- Floating line (above actions) -->
-          <div class="floatLine" id="floatLine">—</div>
 
           <div class="actions">
             <button class="btnRoulette" id="btnRoulette" aria-label="Roulette">
@@ -685,8 +570,7 @@
     </div>
 
     <div class="hint" id="hint">
-      Import : seules les lignes qui commencent par “-” sont ajoutées comme tâches. Le reste = catégories.
-      Raccourci : Ctrl/⌘+Enter pour ajouter depuis Inbox. R = roulette · D = dégommage · M = menu.
+      Import: catégories sur une ligne, tâches sur une ligne (tiret/puce/numéro). R=roulette · D=dégommage · M=menu · Ctrl/⌘+Enter=ajouter depuis inbox.
     </div>
   </div>
 
@@ -694,69 +578,64 @@
   <div class="overlay" id="overlay"></div>
   <aside class="drawer" id="drawer" aria-label="Menu latéral">
     <div class="drawerHeader">
-      <div class="h">Menu</div>
-      <button class="btn" id="btnClose">Fermer</button>
+      <div class="h">MENU</div>
+      <button class="btn" id="btnClose">FERMER</button>
     </div>
 
-    <div class="tabs" id="tabs"></div>
+    <!-- IMPORTANT: menu links that ACTUALLY NAVIGATE -->
+    <div class="menuRow" id="tabs"></div>
+
     <div class="drawerBody" id="drawerBody"></div>
 
     <div class="rowBtns">
-      <button class="btn" id="btnUndo">Undo</button>
-      <button class="btn" id="btnRedo">Redo</button>
+      <button class="btn" id="btnUndo">UNDO</button>
+      <button class="btn" id="btnRedo">REDO</button>
     </div>
   </aside>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-  <!-- BIG END -->
-  <div class="win" id="win">
-    <div class="winCard">
-      <div class="winTitle" id="winTitle">MISSION ACCOMPLIE</div>
-      <div class="winText" id="winText">
-        Plus rien à dégomm… c’est louche. Soit tu es un ninja suprême, soit l’univers a crashé.
-      </div>
-      <div class="rowBtns" style="justify-content:center;">
-        <button class="btn" id="btnWinClose">Retour</button>
-        <button class="btn" id="btnWinNewDay">Nouveau jour</button>
-      </div>
-    </div>
-  </div>
 
 <script>
 (() => {
   "use strict";
 
   // =========================
-  // Storage + State
+  // Utils
   // =========================
-  const LS_KEY = "eliminator_app_v2";
-  const MAX_HISTORY = 50;
+  const LS_KEY = "eliminator_app_v3";
+  const MAX_HISTORY = 60;
 
   const el = (id)=>document.getElementById(id);
   const now = ()=>Date.now();
   const clamp = (n,a,b)=>Math.max(a, Math.min(b,n));
   const uid = ()=> Math.random().toString(36).slice(2,10)+"-"+Date.now().toString(36);
+  const pick = (arr)=> arr[Math.floor(Math.random()*arr.length)];
 
-  // Top counters
+  function isoDay(d = new Date()){
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const da = String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${da}`;
+  }
+
+  // =========================
+  // Elements
+  // =========================
   const startTasksEl = el("startTasks");
   const leftTasksEl  = el("leftTasks");
   const startEthEl   = el("startEth");
   const leftEthEl    = el("leftEth");
   const elimEthEl    = el("elimEth");
 
-  // Bars
   const gFill = el("gFill");
   const gLabel = el("gLabel");
   const tFill = el("tFill");
   const tLabel = el("tLabel");
 
-  // Focus
   const focusTitle = el("focusTitle");
   const focusMeta = el("focusMeta");
   const floatLine = el("floatLine");
 
-  // Buttons
   const btnMenu = el("btnMenu");
   const btnNewDay = el("btnNewDay");
   const btnRoulette = el("btnRoulette");
@@ -766,7 +645,6 @@
   const btnDone = el("btnDone");
   const btnSkip = el("btnSkip");
 
-  // Drawer
   const overlay = el("overlay");
   const drawer = el("drawer");
   const btnClose = el("btnClose");
@@ -775,68 +653,82 @@
   const btnUndo = el("btnUndo");
   const btnRedo = el("btnRedo");
 
-  // Toast + FX
   const toast = el("toast");
   const fxCanvas = el("fx");
   const fx = fxCanvas.getContext("2d");
 
-  // UI toggles
   const topbar = el("topbar");
   const hint = el("hint");
 
-  // Big end
-  const win = el("win");
-  const winTitle = el("winTitle");
-  const winText = el("winText");
-  const btnWinClose = el("btnWinClose");
-  const btnWinNewDay = el("btnWinNewDay");
+  // =========================
+  // Lines / Floating text
+  // =========================
+  const FLOAT_IDLE = [
+    "respire. une cible à la fois.",
+    "petit pas, gros nettoyage.",
+    "tu as le droit d’aller vite… et de t’arrêter.",
+    "objectif: une action. pas un roman.",
+    "prends la cible. dégomme l’eth. recommence."
+  ];
+  const FLOAT_LOCK = [
+    "cible verrouillée.",
+    "priorité capturée.",
+    "tu sais ce que tu fais. (même si tu doutes).",
+    "ok. maintenant: exécution.",
+    "on avance."
+  ];
+  const LINES = [
+    "ETHORION DÉGOMMÉ.",
+    "BIM. UN EN MOINS.",
+    "PROPRE.",
+    "ÇA BAISSE. ET TOI TU MONTES.",
+    "C’EST FAIT."
+  ];
+  const DONE_LINES = [
+    "TÂCHE TERMINÉE.",
+    "CIBLE ÉLIMINÉE.",
+    "FINI. NEXT.",
+    "C’EST RANGÉ DANS LE PASSÉ.",
+    "OK. PAS MAL."
+  ];
+
+  function setFloat(text){ floatLine.textContent = (text && String(text).trim()) ? text : "—"; }
 
   // =========================
-  // Default State
+  // State
   // =========================
-  function isoDay(d = new Date()){
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,"0");
-    const da = String(d.getDate()).padStart(2,"0");
-    return `${y}-${m}-${da}`;
-  }
-
   function buildSets(){
-    // 1) Admission unité 74 (5 patients, 3 items/patient)
     const adm = [];
     adm.push("UNITÉ 74 — ADMISSION");
     for(let i=1;i<=5;i++){
       adm.push(`- Patient ${i} — Voir le/la patient·e — 2 ethorions — importance 3`);
-      adm.push(`- Patient ${i} — Faire la note d’admission — 3 ethorions — importance 3`);
-      adm.push(`- Patient ${i} — Revoir / ajuster le traitement — 2 ethorions — importance 2`);
+      adm.push(`- Patient ${i} — Note d’admission — 3 ethorions — importance 3`);
+      adm.push(`- Patient ${i} — Traitement (revue/ajustement) — 2 ethorions — importance 2`);
     }
 
-    // 2) Sortie unité 74 (5 patients, 3 items/patient)
     const out = [];
     out.push("UNITÉ 74 — SORTIE");
     for(let i=1;i<=5;i++){
       out.push(`- Patient ${i} — Voir le/la patient·e — 2 ethorions — importance 3`);
-      out.push(`- Patient ${i} — Faire la note de sortie — 3 ethorions — importance 3`);
-      out.push(`- Patient ${i} — Vérifier / finaliser traitement & ordonnances — 2 ethorions — importance 2`);
+      out.push(`- Patient ${i} — Note de sortie — 3 ethorions — importance 3`);
+      out.push(`- Patient ${i} — Ordonnances / plan — 2 ethorions — importance 2`);
     }
 
-    // 3) Consultations (6 patients, 2 items/patient : voir + note)
     const consult = [];
     consult.push("CONSULTATIONS");
     for(let i=1;i<=6;i++){
       consult.push(`- Patient ${i} — Voir le/la patient·e — 2 ethorions — importance 3`);
-      consult.push(`- Patient ${i} — Faire la note de consultation — 2 ethorions — importance 3`);
+      consult.push(`- Patient ${i} — Note de consultation — 2 ethorions — importance 3`);
     }
 
-    // 4) Set “quotidien utile” (administratif + organisation)
     const daily = [
       "QUOTIDIEN — SOUTIEN",
-      "- Vérifier l’horaire des cours & adapter le planning consultations — 2 ethorions — importance 3",
-      "- Trier l’inbox mails pro (5 minutes) — 1 ethorion — importance 2",
-      "- Lister 3 priorités réelles (pas des fantasmes) — 1 ethorion — importance 2",
-      "- Préparer 1 message / appel difficile — 2 ethorions — importance 2",
-      "- Ranger / reset bureau (10 minutes) — 2 ethorions — importance 1",
-      "- Micro-pause + eau + respiration (3 minutes) — 1 ethorion — importance 1"
+      "- Vérifier horaires cours + adapter planning consults — 2 ethorions — importance 3",
+      "- Trier inbox mails pro (5 min) — 1 ethorion — importance 2",
+      "- Lister 3 priorités réelles — 1 ethorion — importance 2",
+      "- Préparer 1 message/appel difficile — 2 ethorions — importance 2",
+      "- Reset bureau (10 min) — 2 ethorions — importance 1",
+      "- Micro-pause eau + respiration (3 min) — 1 ethorion — importance 1"
     ];
 
     return [
@@ -850,14 +742,12 @@
   function initial(){
     const today = isoDay();
     return {
-      version: 2,
+      version: 3,
       day: { id: today, startTasks: 0, startEth: 0 },
       focusId: null,
 
-      // roulette bias
       energyProfile: { level: 2, motivation: 2 }, // 1..3
 
-      // UI
       ui: {
         activeTab: "inbox",
         sort: "order",
@@ -865,12 +755,10 @@
         hintHidden: false
       },
 
-      // Data
       tasks: [],
       sets: buildSets(),
 
-      // Notes
-      dayNotes: "", // persistent notes for the day
+      dayNotes: "",
       history: { undo: [], redo: [] },
       events: []
     };
@@ -887,7 +775,6 @@
       const obj = JSON.parse(raw);
       if(!obj || !Array.isArray(obj.tasks)) return null;
 
-      // migrations / defaults
       if(!obj.sets) obj.sets = buildSets();
       if(!obj.history) obj.history = {undo:[], redo:[]};
       if(!obj.events) obj.events = [];
@@ -895,8 +782,7 @@
       if(!obj.ui) obj.ui = {activeTab:"inbox", sort:"order", topbarHidden:false, hintHidden:false};
       if(!obj.day) obj.day = initial().day;
       if(typeof obj.dayNotes !== "string") obj.dayNotes = "";
-
-      obj.version = 2;
+      obj.version = 3;
       return obj;
     }catch{ return null; }
   }
@@ -911,8 +797,8 @@
   }
 
   function logEvent(text){
-    state.events.push({ t: now(), text: String(text).slice(0,220) });
-    state.events = state.events.slice(-250);
+    state.events.push({ t: now(), text: String(text).slice(0,240) });
+    state.events = state.events.slice(-260);
   }
 
   function pushHistory(label){
@@ -952,16 +838,20 @@
   }
 
   // =========================
-  // Parsing
+  // Parsing (accept multiple formats)
   // =========================
   function cleanLine(s){
-    let x = String(s||"").trim();
-    x = x.replace(/[|¦]+/g," ").replace(/\s{2,}/g," ").trim();
-    return x;
+    return String(s||"").replace(/[|¦]+/g," ").replace(/\s{2,}/g," ").trim();
   }
 
-  function isTaskLine(line){ return /^-\s+/.test(line); }
-  function stripTaskPrefix(line){ return line.replace(/^-+\s*/, "").trim(); }
+  function isTaskLike(line){
+    // Accept: "- task", "• task", "* task", "1) task", "1. task", "— task"
+    return /^(\s*[-*•—–]\s+|\s*\d+[\.\)]\s+)/.test(line);
+  }
+
+  function stripTaskPrefix(line){
+    return line.replace(/^(\s*[-*•—–]\s+|\s*\d+[\.\)]\s+)/, "").trim();
+  }
 
   function parseEthorion(text){
     const t = text.toLowerCase();
@@ -969,14 +859,12 @@
     if(m) return clamp(parseInt(m[1],10)||1, 1, 50);
     return null;
   }
-
   function parseMinutes(text){
     const t = text.toLowerCase();
     const m = t.match(/(\d{1,3})\s*(?:minutes|minute|min)\b/);
     if(m) return clamp(parseInt(m[1],10)||0, 1, 999);
     return null;
   }
-
   function parseImportance(text){
     const t = text.toLowerCase();
     const m = t.match(/\b(?:importance|prio|priorité)\s*(\d)\b/);
@@ -992,9 +880,7 @@
 
   function inferEnergyFromText(title, category){
     const t = (title+" "+(category||"")).toLowerCase();
-    // low energy: calls, emails, quick admin
     if(/\b(appeler|tél|tel|téléphone|mail|email|ranger|trier|encoder|encodage)\b/.test(t)) return 1;
-    // high energy: long writing / complex analysis
     if(/\b(rapport|rédaction|dossier|analyse|note d’admission|note de sortie)\b/.test(t)) return 3;
     return 2;
   }
@@ -1008,7 +894,8 @@
       const line = line0.trim();
       if(!line) continue;
 
-      if(!isTaskLine(line)){
+      // Category line if not task-like
+      if(!isTaskLike(line)){
         currentCategory = line.replace(/:+$/,"").trim() || currentCategory;
         continue;
       }
@@ -1020,6 +907,8 @@
       const prio = parseImportance(body) ?? 2;
 
       const title = cleanLine(removeMetaFromTitle(body));
+      if(!title) continue;
+
       out.push({
         title,
         category: currentCategory,
@@ -1042,7 +931,7 @@
       state.day.id = today;
       state.day.startTasks = 0;
       state.day.startEth = 0;
-      // dayNotes intentionally kept (your choice) — if you want per-day notes, we can key by date
+      logEvent("Changement de jour");
     }
     if(state.day.startTasks===0 && state.day.startEth===0){
       setDayBaseline("Départ fixé");
@@ -1061,7 +950,7 @@
     pushHistory("Nouveau jour");
     setDayBaseline("Nouveau jour");
     renderAll();
-    showToast("Nouveau jour.", 2400);
+    showToast("Nouveau jour.", 2000);
   }
 
   // =========================
@@ -1069,14 +958,13 @@
   // =========================
   function nextOrder(){
     const act = state.tasks.filter(t=>!t.done);
-    if(!act.length) return 1;
-    return Math.max(...act.map(t=>t.order||0)) + 1;
+    return act.length ? (Math.max(...act.map(t=>t.order||0)) + 1) : 1;
   }
 
   function addTasksFromText(raw){
     const parsed = parsePasted(raw);
     if(!parsed.length){
-      showToast("Rien (vérifie les tirets).", 2600);
+      showToast("Rien détecté. Mets des puces/tirets/numéros.", 2800);
       return;
     }
     pushHistory(`Ajout ${parsed.length} tâche(s)`);
@@ -1108,7 +996,7 @@
 
     save();
     renderAll();
-    showToast("Ajouté.", 2200);
+    showToast("Ajouté.", 2000);
   }
 
   function getTask(id){ return state.tasks.find(t=>t.id===id) || null; }
@@ -1119,150 +1007,28 @@
     renderFocus();
   }
 
-  function finishTask(taskId, opts={}){
-    const t = getTask(taskId);
-    if(!t) return;
-
-    if(!opts.silent) pushHistory("Terminer tâche");
-
-    t.done = true;
-    t.doneAt = now();
-    t.ethorionRemaining = 0;
-
-    // celebration (regular)
-    confettiDots(1.6);
-    flash(0.10);
-
-    // surprise chance (violent-ish, intermittent)
-    maybeSurprise("task");
-
-    showToast(pick(DONE_LINES), 3200);
-
-    const next = pickWeightedTask();
-    state.focusId = next ? next.id : null;
-
-    save();
-    renderAll();
-    checkWin();
-  }
-
-  function degoOne(){
-    const t = getTask(state.focusId);
-    if(!t){
-      showToast("CIBLE INDISPONIBLE.", 2400);
-      return;
-    }
-
-    pushHistory("Dégommage");
-    t.ethorionRemaining = Math.max(0, (t.ethorionRemaining||0) - 1);
-
-    // roulette vibe: small visual reward
-    confettiDots(0.9);
-    flash(0.08);
-
-    // surprise chance (small)
-    maybeSurprise("eth");
-
-    showToast(pick(LINES), 2400);
-
-    if(t.ethorionRemaining===0){
-      finishTask(t.id, {silent:true});
-      return;
-    }
-
-    save();
-    renderAll();
-  }
-
-  function skip(){
-    const next = pickWeightedTask();
-    state.focusId = next ? next.id : null;
-    save();
-    renderAll();
-    showToast(next ? "CIBLE CHANGÉE." : "PLUS DE CIBLES.", 2200);
-    if(!next) checkWin();
-  }
-
-  function deleteTask(taskId){
-    if(!confirm("Supprimer ?")) return;
-    pushHistory("Supprimer tâche");
-    if(state.focusId === taskId) state.focusId = null;
-    state.tasks = state.tasks.filter(x=>x.id!==taskId);
-    save();
-    renderAll();
-    checkWin();
-  }
-
-  function duplicateTask(taskId){
-    const t = getTask(taskId);
-    if(!t) return;
-    pushHistory("Dupliquer tâche");
-    const c = structuredClone(t);
-    c.id = uid();
-    c.done = false;
-    c.doneAt = null;
-    c.ethorionRemaining = c.ethorionTotal;
-    c.order = nextOrder();
-    c.createdAt = now();
-    state.tasks.push(c);
-    save();
-    renderAll();
-    showToast("Dupliqué.", 2000);
-  }
-
-  function setEthorion(taskId){
-    const t = getTask(taskId);
-    if(!t || t.done) return;
-    const val = prompt("ETHORION total ?", String(t.ethorionTotal||3));
-    if(val===null) return;
-
-    pushHistory("Régler ethorion");
-    const n = clamp(parseInt(val,10)||t.ethorionTotal||3, 1, 50);
-
-    const wasTotal = Math.max(1, t.ethorionTotal||1);
-    const wasRem = clamp(t.ethorionRemaining||0, 0, wasTotal);
-    const ratio = wasTotal ? (wasRem/wasTotal) : 1;
-
-    t.ethorionTotal = n;
-    t.ethorionRemaining = clamp(Math.round(n*ratio), 0, n);
-    if(t.ethorionRemaining===0) t.ethorionRemaining = Math.min(1,n);
-
-    save();
-    renderAll();
-    showToast("OK", 1600);
-  }
-
   // =========================
-  // Weighted roulette with energy/motivation
+  // Weighted roulette
   // =========================
   function pickWeightedTask(){
     const pool = state.tasks.filter(t=>!t.done && (t.ethorionRemaining||0) > 0);
     if(!pool.length) return null;
 
-    const E = state.energyProfile.level;      // 1..3
-    const M = state.energyProfile.motivation; // 1..3
+    const E = state.energyProfile.level;
+    const M = state.energyProfile.motivation;
 
     const weights = pool.map(t=>{
       const rem = Math.max(1, Math.ceil(t.ethorionRemaining||1));
       const pr = (t.priority===3? 3 : t.priority===2? 2 : 1);
 
       let fit = 1.0;
-      if(E===1){
-        fit *= (t.energyTag===1 ? 1.55 : t.energyTag===2 ? 0.95 : 0.55);
-      }else if(E===2){
-        fit *= (t.energyTag===1 ? 1.10 : t.energyTag===2 ? 1.30 : 0.95);
-      }else{
-        fit *= (t.energyTag===3 ? 1.35 : 1.05);
-      }
+      if(E===1) fit *= (t.energyTag===1 ? 1.55 : t.energyTag===2 ? 0.95 : 0.55);
+      else if(E===2) fit *= (t.energyTag===1 ? 1.10 : t.energyTag===2 ? 1.30 : 0.95);
+      else fit *= (t.energyTag===3 ? 1.35 : 1.05);
 
       let mot = 1.0;
-      if(M===1){
-        mot *= (rem<=2 ? 1.55 : rem<=4 ? 1.05 : 0.70);
-      }else if(M===2){
-        mot *= (rem<=3 ? 1.15 : 1.0);
-      }else{
-        mot *= 1.0;
-      }
+      if(M===1) mot *= (rem<=2 ? 1.55 : rem<=4 ? 1.05 : 0.70);
+      else if(M===2) mot *= (rem<=3 ? 1.15 : 1.0);
 
       return Math.max(0.2, rem * pr * fit * mot);
     });
@@ -1276,7 +1042,6 @@
     return pool[pool.length-1];
   }
 
-  // Roulette suspense
   let rouletteLock = false;
   function roulette(){
     if(rouletteLock) return;
@@ -1285,23 +1050,20 @@
     btnRoulette.classList.add("spinning");
 
     setFloat("scan…");
-    showToast("Roulette…", 1100);
+    showToast("Roulette…", 1200);
 
     const suspense = 720 + Math.floor(Math.random()*420);
-
     setTimeout(()=>{
       const t = pickWeightedTask();
       if(t){
         state.focusId = t.id;
         setFloat(pick(FLOAT_LOCK));
-        showToast("CIBLE VERROUILLÉE.", 2200);
-        confettiDots(1.1);
+        showToast("Cible verrouillée.", 2000);
         flash(0.10);
-        maybeSurprise("roulette");
       }else{
         state.focusId = null;
         setFloat("—");
-        showToast("PLUS DE CIBLES.", 2200);
+        showToast("Plus de cibles.", 2000);
       }
 
       btnRoulette.disabled = false;
@@ -1310,12 +1072,60 @@
 
       save();
       renderAll();
-      checkWin();
     }, suspense);
   }
 
+  function finishTask(taskId){
+    const t = getTask(taskId);
+    if(!t) return;
+
+    pushHistory("Terminer tâche");
+    t.done = true;
+    t.doneAt = now();
+    t.ethorionRemaining = 0;
+
+    flash(0.10);
+    showToast(pick(DONE_LINES), 2400);
+
+    const next = pickWeightedTask();
+    state.focusId = next ? next.id : null;
+
+    save();
+    renderAll();
+  }
+
+  function degoOne(){
+    const t = getTask(state.focusId);
+    if(!t){
+      showToast("CIBLE INDISPONIBLE.", 2200);
+      return;
+    }
+
+    pushHistory("Dégommage");
+    t.ethorionRemaining = Math.max(0, (t.ethorionRemaining||0) - 1);
+
+    flash(0.08);
+    showToast(pick(LINES), 2000);
+
+    if(t.ethorionRemaining===0){
+      finishTask(t.id);
+      return;
+    }
+
+    save();
+    renderAll();
+  }
+
+  function skip(){
+    const next = pickWeightedTask();
+    state.focusId = next ? next.id : null;
+    save();
+    renderAll();
+    showToast(next ? "CIBLE CHANGÉE." : "PLUS DE CIBLES.", 2000);
+  }
+
   // =========================
-  // Sorting + drag reorder (Liste)
+  // Sorting + list helpers
   // =========================
   function getActiveSorted(){
     const items = state.tasks.filter(t=>!t.done);
@@ -1332,17 +1142,6 @@
     return items;
   }
 
-  function applyOrderFromList(ids){
-    let k = 1;
-    ids.forEach(id=>{
-      const t = getTask(id);
-      if(t && !t.done) t.order = k++;
-    });
-  }
-
-  // =========================
-  // Rendering
-  // =========================
   function sumActiveEth(){
     return state.tasks.reduce((a,t)=>a + (t.done?0:(t.ethorionRemaining||0)), 0);
   }
@@ -1350,6 +1149,9 @@
     return state.tasks.filter(t=>!t.done).length;
   }
 
+  // =========================
+  // Rendering: counters, bars, focus
+  // =========================
   function renderCounters(){
     ensureDay();
 
@@ -1367,10 +1169,11 @@
     leftEthEl.textContent    = String(leftEth);
     elimEthEl.textContent    = String(elimEth);
 
+    // Global bar: start full and decreases
     const denom = Math.max(1, startE);
     const pctLeft = clamp(Math.round((leftEth/denom)*100), 0, 100);
     gFill.style.width = `${pctLeft}%`;
-    gLabel.textContent = `${pctLeft}%`; // hidden, but kept for possible future toggles
+    gLabel.textContent = `${pctLeft}%`;
 
     updateUndoRedo();
   }
@@ -1382,14 +1185,12 @@
       focusMeta.textContent = "—";
       tFill.style.width = "100%";
       tLabel.textContent = "100%";
-
       btnDego.disabled = true;
       btnNotesTask.disabled = true;
       btnDone.disabled = true;
       btnSkip.disabled = false;
-
-      // button label
       btnDego.textContent = "Dégommer 1 ethorion";
+      if(floatLine.textContent==="—") setFloat(pick(FLOAT_IDLE));
       return;
     }
 
@@ -1400,14 +1201,13 @@
     const cat = t.category || "Sans catégorie";
     focusMeta.textContent = `${cat} · ${pr}${hintMin}`;
 
-    // Button label stays brutal & clear
     btnDego.textContent = `Dégommer 1 ethorion (${t.ethorionRemaining}/${t.ethorionTotal})`;
 
     const total = Math.max(1, t.ethorionTotal||1);
     const rem = clamp(t.ethorionRemaining||0, 0, total);
     const pctLeft = clamp(Math.round((rem/total)*100), 0, 100);
     tFill.style.width = `${pctLeft}%`;
-    tLabel.textContent = `${pctLeft}%`; // hidden
+    tLabel.textContent = `${pctLeft}%`;
 
     btnDego.disabled = false;
     btnNotesTask.disabled = false;
@@ -1419,29 +1219,40 @@
   }
 
   function renderAll(){
-    // UI toggles
     topbar.classList.toggle("hidden", !!state.ui.topbarHidden);
     hint.classList.toggle("hidden", !!state.ui.hintHidden);
 
     renderCounters();
     renderFocus();
-    renderDrawer();
+    renderDrawer(); // keeps menu functional
   }
 
   // =========================
-  // Drawer Tabs + Content
+  // Drawer tabs: THESE are the menu links you wanted
   // =========================
   const TAB_DEFS = [
-    { key:"inbox",   label:"Inbox" },
-    { key:"liste",   label:"Liste" },
-    { key:"cats",    label:"Cat" },
-    { key:"sets",    label:"Sets" },
-    { key:"energie", label:"Énergie" },
-    { key:"notes",   label:"Notes" },
-    { key:"hist",    label:"Hist" },
-    { key:"rapport", label:"Rapport" },
+    { key:"inbox",   label:"INBOX" },
+    { key:"liste",   label:"LISTE" },
+    { key:"cats",    label:"CAT" },
+    { key:"sets",    label:"SETS" },
+    { key:"energie", label:"ÉNERGIE" },
+    { key:"notes",   label:"NOTES" },
+    { key:"hist",    label:"HIST" },
+    { key:"rapport", label:"RAPPORT" },
     { key:"ui",      label:"UI" }
   ];
+
+  function openDrawer(tabKey){
+    overlay.classList.add("show");
+    drawer.classList.add("show");
+    if(tabKey) state.ui.activeTab = tabKey;
+    save();
+    renderDrawer();
+  }
+  function closeDrawer(){
+    overlay.classList.remove("show");
+    drawer.classList.remove("show");
+  }
 
   function setTab(key){
     state.ui.activeTab = key;
@@ -1472,11 +1283,9 @@
     return clamp(Math.round((rem/total)*100), 0, 100);
   }
 
-  function renderTaskRow(t, {draggable=false}={}){
+  function renderTaskRow(t){
     const row = document.createElement("div");
     row.className = "trow";
-    row.dataset.id = t.id;
-
     const pct = miniBarPct(t.ethorionRemaining, t.ethorionTotal);
 
     row.innerHTML = `
@@ -1492,33 +1301,20 @@
           </div>
         </div>
         <div class="tacts">
-          ${!t.done ? `<button class="btn" data-a="focus">Focus</button>` : ""}
-          ${!t.done ? `<button class="btn" data-a="eth">Eth</button>` : ""}
-          ${!t.done ? `<button class="btn" data-a="dup">Dupl</button>` : ""}
+          ${!t.done ? `<button class="btn" data-a="focus">FOCUS</button>` : ""}
           ${!t.done ? `<button class="btn" data-a="ok">OK</button>` : ""}
-          <button class="btn" data-a="x">X</button>
         </div>
       </div>
-      <div class="sbarMiniWrap" aria-label="Progression">
-        <div class="sbarMiniFill" style="width:${pct}%"></div>
-      </div>
+      <div class="sbarMiniWrap"><div class="sbarMiniFill" style="width:${pct}%"></div></div>
     `;
 
     row.querySelectorAll("[data-a]").forEach(btn=>{
       const a = btn.dataset.a;
       btn.addEventListener("click", ()=>{
-        if(a==="focus"){ setFocus(t.id); renderAll(); }
-        if(a==="eth"){ setEthorion(t.id); }
-        if(a==="dup"){ duplicateTask(t.id); }
+        if(a==="focus"){ setFocus(t.id); renderAll(); closeDrawer(); }
         if(a==="ok"){ finishTask(t.id); }
-        if(a==="x"){ deleteTask(t.id); }
       });
     });
-
-    if(draggable && !t.done){
-      row.draggable = true;
-      row.style.cursor = "grab";
-    }
 
     return row;
   }
@@ -1527,13 +1323,12 @@
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
-      <div class="cardTitle"><span>Inbox</span><span>Ctrl/⌘+Enter</span></div>
+      <div class="cardTitle"><span>INBOX</span><span>Ctrl/⌘+Enter</span></div>
       <textarea id="inboxTA" placeholder="Catégorie
 - Tâche – 3 ethorions – 15 minutes – importance 2
-- …"></textarea>
-      <div class="rowBtns">
-        <button class="btn" id="btnAdd">Ajouter</button>
-      </div>
+• Autre tâche…
+1) Autre format…"></textarea>
+      <div class="rowBtns"><button class="btn" id="btnAdd">AJOUTER</button></div>
     `;
     const ta = card.querySelector("#inboxTA");
     const add = card.querySelector("#btnAdd");
@@ -1541,6 +1336,7 @@
     add.addEventListener("click", ()=>{
       addTasksFromText(ta.value);
       ta.value = "";
+      setFloat(pick(FLOAT_LOCK));
     });
 
     ta.addEventListener("keydown", (e)=>{
@@ -1558,7 +1354,7 @@
     wrap.className = "card";
     wrap.innerHTML = `
       <div class="cardTitle">
-        <span>Liste</span>
+        <span>LISTE</span>
         <span>
           <select id="sortSel" aria-label="Tri">
             <option value="order">Tri: ordre</option>
@@ -1570,10 +1366,8 @@
       </div>
       <div class="list" id="taskList"></div>
       <details>
-        <summary>Terminé</summary>
-        <div class="inside">
-          <div class="list" id="doneList"></div>
-        </div>
+        <summary>TERMINÉ</summary>
+        <div class="inside"><div class="list" id="doneList"></div></div>
       </details>
     `;
 
@@ -1587,62 +1381,13 @@
     });
 
     const list = wrap.querySelector("#taskList");
-    const items = getActiveSorted();
-    const draggable = (state.ui.sort==="order");
-
-    items.forEach(t=> list.appendChild(renderTaskRow(t, {draggable})));
-
-    if(draggable){
-      let dragId = null;
-
-      list.addEventListener("dragstart", (e)=>{
-        const row = e.target.closest(".trow");
-        if(!row) return;
-        dragId = row.dataset.id;
-        e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("text/plain", dragId);
-      });
-
-      list.addEventListener("dragover", (e)=>{
-        e.preventDefault();
-        e.dataTransfer.dropEffect = "move";
-      });
-
-      list.addEventListener("drop", (e)=>{
-        e.preventDefault();
-        const targetRow = e.target.closest(".trow");
-        if(!targetRow) return;
-
-        const fromId = e.dataTransfer.getData("text/plain") || dragId;
-        const toId = targetRow.dataset.id;
-        if(!fromId || !toId || fromId===toId) return;
-
-        const rows = [...list.querySelectorAll(".trow")];
-        const fromEl = rows.find(r=>r.dataset.id===fromId);
-        const toEl = rows.find(r=>r.dataset.id===toId);
-        if(!fromEl || !toEl) return;
-
-        pushHistory("Réordonner");
-
-        const rect = toEl.getBoundingClientRect();
-        const after = (e.clientY - rect.top) > rect.height/2;
-        if(after) toEl.after(fromEl);
-        else toEl.before(fromEl);
-
-        const ids = [...list.querySelectorAll(".trow")].map(r=>r.dataset.id);
-        applyOrderFromList(ids);
-
-        save();
-        renderDrawer();
-        showToast("Ordre mis à jour.", 2000);
-      });
-    }
+    getActiveSorted().forEach(t=> list.appendChild(renderTaskRow(t)));
 
     const doneList = wrap.querySelector("#doneList");
     state.tasks
       .filter(t=>t.done)
       .sort((a,b)=>(b.doneAt||0)-(a.doneAt||0))
-      .slice(0, 60)
+      .slice(0, 80)
       .forEach(t=> doneList.appendChild(renderTaskRow(t)));
 
     return wrap;
@@ -1662,14 +1407,13 @@
   function renderDrawerCats(){
     const wrap = document.createElement("div");
     wrap.className = "card";
-    wrap.innerHTML = `<div class="cardTitle"><span>Catégories</span><span>clic pour ouvrir</span></div>`;
+    wrap.innerHTML = `<div class="cardTitle"><span>CATÉGORIES</span><span>groupées</span></div>`;
 
-    const items = getActiveSorted();
+    const items = state.tasks.filter(t=>!t.done);
     const {m, keys} = groupByCategory(items);
 
     keys.forEach(cat=>{
       const det = document.createElement("details");
-      det.open = false;
       const sumEth = m.get(cat).reduce((a,t)=>a+(t.ethorionRemaining||0),0);
       const sum = document.createElement("summary");
       sum.textContent = `${cat} — ETH ${sumEth}`;
@@ -1693,17 +1437,11 @@
     const wrap = document.createElement("div");
     wrap.className = "card";
     wrap.innerHTML = `
-      <div class="cardTitle"><span>Sets</span><span>préenregistrés + perso</span></div>
+      <div class="cardTitle"><span>SETS</span><span>appliquer</span></div>
       <div class="list" id="setsList"></div>
-      <details>
-        <summary>Créer / éditer set</summary>
-        <div class="inside" id="setEditorHost"></div>
-      </details>
     `;
 
     const list = wrap.querySelector("#setsList");
-    const host = wrap.querySelector("#setEditorHost");
-
     state.sets.forEach(s=>{
       const row = document.createElement("div");
       row.className = "trow";
@@ -1713,97 +1451,25 @@
             <div class="tname">${esc(s.name)}</div>
             <div class="tmini">${esc(String((s.lines||[]).length))} lignes</div>
           </div>
-          <div class="tacts">
-            <button class="btn" data-a="apply">Appliquer</button>
-            <button class="btn" data-a="edit">Éditer</button>
-            <button class="btn" data-a="del">X</button>
-          </div>
+          <div class="tacts"><button class="btn" data-a="apply">APPLIQUER</button></div>
         </div>
       `;
-
       row.querySelector('[data-a="apply"]').addEventListener("click", ()=>{
         addTasksFromText((s.lines||[]).join("\n"));
-        showToast("Set appliqué.", 2000);
+        showToast("Set appliqué.", 1800);
+        setFloat(pick(FLOAT_LOCK));
       });
-
-      row.querySelector('[data-a="edit"]').addEventListener("click", ()=>{
-        host.innerHTML = "";
-        host.appendChild(renderSetEditor(s.id));
-        row.closest("details")?.setAttribute("open","true");
-      });
-
-      row.querySelector('[data-a="del"]').addEventListener("click", ()=>{
-        if(!confirm("Supprimer set ?")) return;
-        pushHistory("Supprimer set");
-        state.sets = state.sets.filter(x=>x.id!==s.id);
-        save();
-        renderDrawer();
-      });
-
       list.appendChild(row);
     });
 
-    // empty editor by default
-    host.appendChild(renderSetEditor(null));
-
     return wrap;
-  }
-
-  function renderSetEditor(setId){
-    const s = setId ? state.sets.find(x=>x.id===setId) : null;
-
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <div class="cardTitle"><span>${s ? "Éditer set" : "Nouveau set"}</span><span>lignes “-” = tâches</span></div>
-      <input type="text" id="setName" placeholder="Nom du set" value="${esc(s ? s.name : "")}">
-      <textarea id="setLines" placeholder="Catégorie
-- tâche – 3 ethorions – importance 2
-- tâche">${esc(s ? (s.lines||[]).join("\n") : "")}</textarea>
-      <div class="rowBtns">
-        <button class="btn" id="btnSaveSet">Enregistrer</button>
-        <button class="btn" id="btnApplySetNow">Appliquer</button>
-      </div>
-    `;
-
-    const name = card.querySelector("#setName");
-    const lines = card.querySelector("#setLines");
-    const saveBtn = card.querySelector("#btnSaveSet");
-    const applyBtn = card.querySelector("#btnApplySetNow");
-
-    saveBtn.addEventListener("click", ()=>{
-      const n = cleanLine(name.value).slice(0,40);
-      const ls = String(lines.value||"").split(/\r?\n/).map(cleanLine).filter(Boolean);
-      if(!n){ showToast("Nom ?", 2000); return; }
-      if(!ls.length){ showToast("Lignes ?", 2000); return; }
-
-      pushHistory("Enregistrer set");
-
-      if(s){
-        s.name = n;
-        s.lines = ls;
-      }else{
-        state.sets.push({ id:"set_"+uid(), name:n, lines: ls });
-      }
-      save();
-      renderDrawer();
-      showToast("OK", 1800);
-    });
-
-    applyBtn.addEventListener("click", ()=>{
-      if(!lines.value.trim()){ showToast("Rien à appliquer.", 1800); return; }
-      addTasksFromText(lines.value);
-      showToast("Set appliqué.", 1800);
-    });
-
-    return card;
   }
 
   function renderDrawerEnergy(){
     const wrap = document.createElement("div");
     wrap.className = "card";
     wrap.innerHTML = `
-      <div class="cardTitle"><span>Énergie</span><span>influence roulette</span></div>
+      <div class="cardTitle"><span>ÉNERGIE</span><span>influence roulette</span></div>
       <select id="lvl">
         <option value="1">Énergie: basse</option>
         <option value="2">Énergie: moyenne</option>
@@ -1814,9 +1480,7 @@
         <option value="2">Motivation: moyenne</option>
         <option value="3">Motivation: haute</option>
       </select>
-      <div class="rowBtns">
-        <button class="btn" id="btnApply">Appliquer</button>
-      </div>
+      <div class="rowBtns"><button class="btn" id="btnApply">APPLIQUER</button></div>
     `;
 
     const lvl = wrap.querySelector("#lvl");
@@ -1830,7 +1494,7 @@
       state.energyProfile.motivation = parseInt(mot.value,10);
       save();
       renderAll();
-      showToast("OK", 1800);
+      showToast("OK", 1400);
       setFloat(pick(FLOAT_IDLE));
     });
 
@@ -1840,79 +1504,44 @@
   function renderDrawerNotes(){
     const wrap = document.createElement("div");
     wrap.className = "card";
-
     const t = getTask(state.focusId);
 
     wrap.innerHTML = `
-      <div class="cardTitle"><span>Notes</span><span>persistantes</span></div>
+      <div class="cardTitle"><span>NOTES</span><span>persistantes</span></div>
 
-      <details ${state.dayNotes ? "open" : ""}>
-        <summary>Notes jour (ne s’effacent pas)</summary>
+      <details open>
+        <summary>NOTES JOUR</summary>
         <div class="inside">
-          <textarea id="dayNotesTA" placeholder="Notes au vol… (gardées dans le système)">${esc(state.dayNotes||"")}</textarea>
-          <div class="rowBtns">
-            <button class="btn" id="btnSaveDayNotes">Enregistrer</button>
-            <button class="btn" id="btnCopyDayNotes">Copier</button>
-            <button class="btn" id="btnMailtoDayNotes">Mailto</button>
-          </div>
-          <div class="tmini">“Mailto” ouvre ton client mail avec le texte pré-rempli (pas d’envoi automatique).</div>
+          <textarea id="dayNotesTA" placeholder="Notes au vol…">${esc(state.dayNotes||"")}</textarea>
+          <div class="rowBtns"><button class="btn" id="btnSaveDayNotes">ENREGISTRER</button></div>
         </div>
       </details>
 
       <details ${t && t.notes ? "open" : ""}>
-        <summary>Notes tâche (cible en cours)</summary>
+        <summary>NOTES TÂCHE</summary>
         <div class="inside">
           <div class="tmini">${t ? esc(t.title) : "Aucune cible"}</div>
           <textarea id="taskNotesTA" placeholder="Notes tâche…">${esc(t ? (t.notes||"") : "")}</textarea>
-          <div class="rowBtns">
-            <button class="btn" id="btnSaveTaskNotes" ${t ? "" : "disabled"}>Enregistrer</button>
-            <button class="btn" id="btnCopyTaskNotes" ${t ? "" : "disabled"}>Copier</button>
-          </div>
+          <div class="rowBtns"><button class="btn" id="btnSaveTaskNotes" ${t ? "" : "disabled"}>ENREGISTRER</button></div>
         </div>
       </details>
     `;
 
     const dayTA = wrap.querySelector("#dayNotesTA");
-    const taskTA = wrap.querySelector("#taskNotesTA");
-
     wrap.querySelector("#btnSaveDayNotes").addEventListener("click", ()=>{
       pushHistory("Notes jour");
       state.dayNotes = String(dayTA.value||"").slice(0, 20000);
       save();
-      showToast("Notes jour OK.", 1800);
-    });
-
-    wrap.querySelector("#btnCopyDayNotes").addEventListener("click", async ()=>{
-      try{
-        await navigator.clipboard.writeText(String(dayTA.value||""));
-        showToast("Copié.", 1400);
-      }catch{
-        showToast("Copie impossible (navigateur).", 2000);
-      }
-    });
-
-    wrap.querySelector("#btnMailtoDayNotes").addEventListener("click", ()=>{
-      const subject = encodeURIComponent(`Notes — ${state.day.id}`);
-      const body = encodeURIComponent(String(dayTA.value||""));
-      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+      showToast("Notes jour OK.", 1500);
     });
 
     if(t){
+      const taskTA = wrap.querySelector("#taskNotesTA");
       wrap.querySelector("#btnSaveTaskNotes").addEventListener("click", ()=>{
         pushHistory("Notes tâche");
         t.notes = String(taskTA.value||"").slice(0, 20000);
         save();
-        showToast("Notes tâche OK.", 1800);
-        renderAll();
-      });
-
-      wrap.querySelector("#btnCopyTaskNotes").addEventListener("click", async ()=>{
-        try{
-          await navigator.clipboard.writeText(String(taskTA.value||""));
-          showToast("Copié.", 1400);
-        }catch{
-          showToast("Copie impossible (navigateur).", 2000);
-        }
+        showToast("Notes tâche OK.", 1500);
       });
     }
 
@@ -1922,12 +1551,12 @@
   function renderDrawerHist(){
     const wrap = document.createElement("div");
     wrap.className = "card";
-    wrap.innerHTML = `<div class="cardTitle"><span>Historique</span><span>visible</span></div>`;
+    wrap.innerHTML = `<div class="cardTitle"><span>HISTORIQUE</span><span>visible</span></div>`;
 
     const list = document.createElement("div");
     list.className = "list";
 
-    state.events.slice().reverse().slice(0, 140).forEach(ev=>{
+    state.events.slice().reverse().slice(0, 160).forEach(ev=>{
       const row = document.createElement("div");
       row.className = "trow";
       const d = new Date(ev.t);
@@ -1943,7 +1572,7 @@
   function renderDrawerRapport(){
     const wrap = document.createElement("div");
     wrap.className = "card";
-    wrap.innerHTML = `<div class="cardTitle"><span>Rapport</span><span>jour</span></div>`;
+    wrap.innerHTML = `<div class="cardTitle"><span>RAPPORT</span><span>jour</span></div>`;
 
     const active = state.tasks.filter(t=>!t.done);
     const done = state.tasks.filter(t=>t.done);
@@ -1964,69 +1593,8 @@
       <div class="tmini">Reste: ${esc(String(leftTasks))} tâches · ${esc(String(leftEth))} ETH</div>
       <div class="tmini">Éliminé: ${esc(String(elimEth))} ETH · Terminé: ${esc(String(doneTasks))} tâches</div>
     `;
-
     wrap.appendChild(box);
 
-    // by category
-    const byCat = {};
-    state.tasks.forEach(t=>{
-      const c = t.category || "Sans catégorie";
-      if(!byCat[c]) byCat[c] = { n:0, total:0, left:0 };
-      byCat[c].n++;
-      byCat[c].total += (t.ethorionTotal||0);
-      byCat[c].left += (t.done?0:(t.ethorionRemaining||0));
-    });
-
-    const list = document.createElement("div");
-    list.className = "list";
-    Object.keys(byCat).sort((a,b)=>a.localeCompare(b,"fr")).forEach(c=>{
-      const r = byCat[c];
-      const row = document.createElement("div");
-      row.className = "trow";
-      row.innerHTML = `
-        <div class="tname">${esc(c)}</div>
-        <div class="tmini">${esc(String(r.n))} tâches · ETH ${esc(String(r.left))}/${esc(String(r.total))}</div>
-      `;
-      list.appendChild(row);
-    });
-
-    // quick copy
-    const txt = [
-      `ELIMINATOR — Rapport du ${state.day.id}`,
-      `Départ: ${startT} tâches · ${startE} ETH`,
-      `Reste: ${leftTasks} tâches · ${leftEth} ETH`,
-      `Éliminé: ${elimEth} ETH · Terminé: ${doneTasks} tâches`,
-      "",
-      ...Object.keys(byCat).sort((a,b)=>a.localeCompare(b,"fr")).map(c=>{
-        const r = byCat[c];
-        return `${c}: ${r.n} tâches · ETH ${r.left}/${r.total}`;
-      })
-    ].join("\n");
-
-    const actions = document.createElement("div");
-    actions.className = "rowBtns";
-    actions.innerHTML = `
-      <button class="btn" id="btnCopyReport">Copier</button>
-      <button class="btn" id="btnMailtoReport">Mailto</button>
-    `;
-
-    actions.querySelector("#btnCopyReport").addEventListener("click", async ()=>{
-      try{
-        await navigator.clipboard.writeText(txt);
-        showToast("Rapport copié.", 1600);
-      }catch{
-        showToast("Copie impossible (navigateur).", 2000);
-      }
-    });
-
-    actions.querySelector("#btnMailtoReport").addEventListener("click", ()=>{
-      const subject = encodeURIComponent(`Rapport — ${state.day.id}`);
-      const body = encodeURIComponent(txt);
-      window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    });
-
-    wrap.appendChild(list);
-    wrap.appendChild(actions);
     return wrap;
   }
 
@@ -2034,21 +1602,16 @@
     const wrap = document.createElement("div");
     wrap.className = "card";
     wrap.innerHTML = `
-      <div class="cardTitle"><span>UI</span><span>options affichage</span></div>
-
-      <div class="trow">
-        <div class="tname">Affichage</div>
-        <div class="tmini">Moins d’encadrés = déjà fait côté centre. Ici tu règles ce qui apparaît.</div>
-      </div>
+      <div class="cardTitle"><span>UI</span><span>affichage</span></div>
 
       <div class="trow">
         <div class="trowTop">
           <div>
             <div class="tname">Topbar</div>
-            <div class="tmini">Masquer la barre du haut (compteurs + menu).</div>
+            <div class="tmini">Masquer/afficher les compteurs.</div>
           </div>
           <div class="tacts">
-            <button class="btn" id="btnToggleTopbar">${state.ui.topbarHidden ? "Afficher" : "Masquer"}</button>
+            <button class="btn" id="btnToggleTopbar">${state.ui.topbarHidden ? "AFFICHER" : "MASQUER"}</button>
           </div>
         </div>
       </div>
@@ -2057,10 +1620,10 @@
         <div class="trowTop">
           <div>
             <div class="tname">Hint</div>
-            <div class="tmini">Masquer la ligne d’aide en bas.</div>
+            <div class="tmini">Masquer/afficher l’aide.</div>
           </div>
           <div class="tacts">
-            <button class="btn" id="btnToggleHint">${state.ui.hintHidden ? "Afficher" : "Masquer"}</button>
+            <button class="btn" id="btnToggleHint">${state.ui.hintHidden ? "AFFICHER" : "MASQUER"}</button>
           </div>
         </div>
       </div>
@@ -2069,10 +1632,10 @@
         <div class="trowTop">
           <div>
             <div class="tname">Reset</div>
-            <div class="tmini">Supprime tout (tâches, sets perso, notes, historique). Irréversible.</div>
+            <div class="tmini">Efface tout. Irréversible.</div>
           </div>
           <div class="tacts">
-            <button class="btn" id="btnHardReset">Reset</button>
+            <button class="btn" id="btnHardReset">RESET</button>
           </div>
         </div>
       </div>
@@ -2099,7 +1662,7 @@
       save();
       closeDrawer();
       renderAll();
-      showToast("Reset OK.", 2000);
+      showToast("Reset OK.", 1600);
     });
 
     return wrap;
@@ -2123,23 +1686,13 @@
   }
 
   // =========================
-  // Drawer open/close + swipe close
+  // Menu wiring (the thing you asked)
   // =========================
-  function openDrawer(){
-    overlay.classList.add("show");
-    drawer.classList.add("show");
-    renderDrawer();
-  }
-  function closeDrawer(){
-    overlay.classList.remove("show");
-    drawer.classList.remove("show");
-  }
-
-  btnMenu.addEventListener("click", openDrawer);
+  btnMenu.addEventListener("click", ()=> openDrawer(state.ui.activeTab));
   btnClose.addEventListener("click", closeDrawer);
   overlay.addEventListener("click", closeDrawer);
 
-  // swipe to close (left panel)
+  // swipe to close
   let touchX0 = null;
   drawer.addEventListener("pointerdown", (e)=>{
     if(e.pointerType==="mouse") return;
@@ -2148,27 +1701,75 @@
   drawer.addEventListener("pointermove", (e)=>{
     if(touchX0===null) return;
     const dx = e.clientX - touchX0;
-    if(dx < -80){
-      touchX0 = null;
-      closeDrawer();
-    }
+    if(dx < -80){ touchX0 = null; closeDrawer(); }
   });
   drawer.addEventListener("pointerup", ()=> touchX0 = null);
   drawer.addEventListener("pointercancel", ()=> touchX0 = null);
 
-  // =========================
-  // Buttons wiring
-  // =========================
+  // Footer buttons
   btnNewDay.addEventListener("click", newDay);
   btnRoulette.addEventListener("click", roulette);
   btnDego.addEventListener("click", degoOne);
+  btnDone.addEventListener("click", ()=> state.focusId ? finishTask(state.focusId) : showToast("Pas de cible.", 1500));
+  btnSkip.addEventListener("click", skip);
 
-  btnNotesTask.addEventListener("click", ()=>{
-    openDrawer();
-    setTab("notes");
-    showToast("Notes: tâche + jour.", 1400);
+  btnNotesTask.addEventListener("click", ()=> openDrawer("notes"));
+  btnNotesDay.addEventListener("click", ()=> openDrawer("notes"));
+
+  // Undo/redo
+  btnUndo.addEventListener("click", undo);
+  btnRedo.addEventListener("click", redo);
+
+  // Keyboard shortcuts
+  window.addEventListener("keydown", (e)=>{
+    const key = e.key.toLowerCase();
+    if(key==="m"){ openDrawer(state.ui.activeTab); }
+    if(key==="r"){ roulette(); }
+    if(key==="d"){ degoOne(); }
+    if(key==="escape"){ closeDrawer(); }
   });
-  btnNotesDay.addEventListener("click", ()=>{
-    openDrawer();
-    setTab("notes");
-    showToast("Notes
+
+  // =========================
+  // Toast + simple flash
+  // =========================
+  let toastTimer = null;
+  function showToast(msg, ms=2000){
+    toast.textContent = String(msg||"");
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>toast.classList.remove("show"), ms);
+  }
+
+  function resizeFx(){
+    fxCanvas.width = Math.floor(window.innerWidth * (window.devicePixelRatio||1));
+    fxCanvas.height = Math.floor(window.innerHeight * (window.devicePixelRatio||1));
+  }
+  window.addEventListener("resize", resizeFx);
+  resizeFx();
+
+  function flash(alpha=0.10){
+    const w = fxCanvas.width, h = fxCanvas.height;
+    fx.clearRect(0,0,w,h);
+    fx.globalAlpha = alpha;
+    fx.fillStyle = "#ffffff";
+    fx.fillRect(0,0,w,h);
+    fx.globalAlpha = 1;
+    setTimeout(()=>fx.clearRect(0,0,w,h), 60);
+  }
+
+  // =========================
+  // Boot
+  // =========================
+  function boot(){
+    setFloat(pick(FLOAT_IDLE));
+    renderAll();
+    showToast("ELIMINATOR chargé.", 1400);
+    logEvent("Boot");
+    save();
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>
